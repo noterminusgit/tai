@@ -1,10 +1,9 @@
-defmodule Tai.VenueAdapters.Ftx do
-  alias Tai.VenueAdapters.Ftx.{
+defmodule Tai.VenueAdapters.Kraken do
+  alias Tai.VenueAdapters.Kraken.{
     StreamSupervisor,
     Products,
     Accounts,
     MakerTakerFees,
-    Positions,
     CreateOrder,
     CancelOrder
   }
@@ -15,9 +14,9 @@ defmodule Tai.VenueAdapters.Ftx do
   defdelegate products(venue_id), to: Products
   defdelegate accounts(venue_id, credential_id, credentials), to: Accounts
   defdelegate maker_taker_fees(venue_id, credential_id, credentials), to: MakerTakerFees
-  defdelegate positions(venue_id, credential_id, credentials), to: Positions
+  def positions(_venue_id, _credential_id, _credentials), do: {:error, :not_supported}
   defdelegate create_order(order, credentials), to: CreateOrder
-  def amend_order(_order, _attrs, _credentials), do: {:error, :not_supported}
+  def amend_order(_venue_order_id, _attrs, _credentials), do: {:error, :not_supported}
   def amend_bulk_orders(_orders_with_attrs, _credentials), do: {:error, :not_supported}
   defdelegate cancel_order(order, credentials), to: CancelOrder
 end
