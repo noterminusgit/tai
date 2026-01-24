@@ -54,10 +54,16 @@ config :tai,
         }
       }
     ],
-    ftx: [
+    kraken: [
       start_on_boot: true,
-      adapter: Tai.VenueAdapters.Ftx,
-      products: "btc/usd btc-perp"
+      adapter: Tai.VenueAdapters.Kraken,
+      products: "btc_usd eth_usd",
+      credentials: %{
+        main: %{
+          api_key: {:system_file, "KRAKEN_API_KEY"},
+          api_secret: {:system_file, "KRAKEN_API_SECRET"}
+        }
+      }
     ],
     huobi: [
       start_on_boot: true,

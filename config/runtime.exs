@@ -41,18 +41,18 @@ if config_env() == :dev do
         # TODO: Support other types of streams e.g...
         # index_streams: "btc_usd",
         # candle_streams: %{
-        #   min_1: "binance.btc_usdt ftx.btc-perp"
+        #   min_1: "binance.btc_usdt kraken.btc_usd"
         # },
         # indicator_streams: %{
-        #   distance_from_mean_avg_fast: "binance.btc_usdt ftx.btc-perp",
-        #   distance_from_mean_avg_slow: "binance.btc_usdt ftx.btc-perp"
+        #   distance_from_mean_avg_fast: "binance.btc_usdt kraken.btc_usd",
+        #   distance_from_mean_avg_slow: "binance.btc_usdt kraken.btc_usd"
         # }
-        market_streams: "binance.btc_usdt ftx.btc-perp"
+        market_streams: "binance.btc_usdt kraken.btc_usd"
       },
       log_trade: %{
         advisor: Examples.LogTrade.Advisor,
         factory: Tai.Advisors.Factories.OnePerProduct,
-        market_streams: "ftx.btc-perp"
+        market_streams: "kraken.btc_usd"
       }
     }
 
@@ -63,17 +63,17 @@ if config_env() == :dev do
         adapter: Tai.VenueAdapters.Binance,
         products: "btc_usdt ltc_usdt eth_usdt"
       ],
+      kraken: [
+        start_on_boot: true,
+        adapter: Tai.VenueAdapters.Kraken,
+        products: "btc_usd eth_usd",
+        market_streams: "*"
+      ],
       gdax: [
         start_on_boot: true,
         adapter: Tai.VenueAdapters.Gdax,
         products: "btc_usd eth_usd",
         market_streams: "* -eth_usd"
-      ],
-      ftx: [
-        start_on_boot: true,
-        adapter: Tai.VenueAdapters.Ftx,
-        products: "btc/usd btc-perp btc-0924",
-        market_streams: "* -btc/usd"
       ],
       delta_exchange: [
         start_on_boot: true,
@@ -229,13 +229,13 @@ if config_env() == :test do
           }
         }
       ],
-      ftx: [
+      kraken: [
         enabled: true,
-        adapter: Tai.VenueAdapters.Ftx,
+        adapter: Tai.VenueAdapters.Kraken,
         credentials: %{
           main: %{
-            api_key: {:system_file, "FTX_API_KEY"},
-            api_secret: {:system_file, "FTX_API_SECRET"}
+            api_key: {:system_file, "KRAKEN_API_KEY"},
+            api_secret: {:system_file, "KRAKEN_API_SECRET"}
           }
         }
       ],
@@ -260,7 +260,7 @@ if config_env() == :test do
     :mock,
     :okex,
     :huobi,
-    :ftx,
+    :kraken,
     :delta_exchange
   ]
 
@@ -271,16 +271,16 @@ if config_env() == :test do
     :gdax,
     :mock,
     :okex,
-    :ftx
+    :kraken
   ]
 
   config :tai, :test_venue_adapters_accounts_error, [:bitmex]
-  config :tai, :test_venue_adapters_maker_taker_fees, [:mock, :binance, :gdax, :okex, :ftx]
+  config :tai, :test_venue_adapters_maker_taker_fees, [:mock, :binance, :gdax, :okex, :kraken]
 
   config :tai, :test_venue_adapters_create_order_gtc_accepted, [
     :binance,
     :bitmex,
-    :ftx,
+    :kraken,
     :okex_futures,
     :okex_spot,
     :okex_swap
@@ -288,11 +288,11 @@ if config_env() == :test do
 
   config :tai, :test_venue_adapters_create_order_fok, [:bitmex, :binance]
   config :tai, :test_venue_adapters_create_order_ioc, []
-  config :tai, :test_venue_adapters_create_order_ioc_accepted, [:binance, :bitmex, :ftx]
+  config :tai, :test_venue_adapters_create_order_ioc_accepted, [:binance, :bitmex, :kraken]
   config :tai, :test_venue_adapters_create_order_close, [:okex_futures, :okex_swap]
 
   config :tai, :test_venue_adapters_create_order_error, [:bitmex]
-  config :tai, :test_venue_adapters_create_order_error_size_too_small, [:ftx]
+  config :tai, :test_venue_adapters_create_order_error_size_too_small, [:kraken]
 
   config :tai, :test_venue_adapters_create_order_error_insufficient_balance, [
     :bitmex,
@@ -307,7 +307,7 @@ if config_env() == :test do
   config :tai, :test_venue_adapters_cancel_order_accepted, [
     :binance,
     :bitmex,
-    :ftx,
+    :kraken,
     :okex_futures,
     :okex_swap,
     :okex_spot
@@ -317,7 +317,7 @@ if config_env() == :test do
     :binance,
     :okex_futures,
     :okex_swap,
-    :ftx
+    :kraken
   ]
 
   config :tai, :test_venue_adapters_cancel_order_error_timeout, [
@@ -330,7 +330,7 @@ if config_env() == :test do
   config :tai, :test_venue_adapters_cancel_order_error_nonce_not_increasing, [:bitmex]
   config :tai, :test_venue_adapters_cancel_order_error_rate_limited, [:bitmex]
   config :tai, :test_venue_adapters_cancel_order_error_unhandled, [:bitmex, :binance]
-  config :tai, :test_venue_adapters_with_positions, [:bitmex, :deribit, :okex, :ftx]
+  config :tai, :test_venue_adapters_with_positions, [:bitmex, :deribit, :okex]
 
   config :exvcr,
     filter_request_headers: [
@@ -352,10 +352,9 @@ if config_env() == :test do
       "OK-ACCESS-PASSPHRASE",
       # Deribit
       "Authorization",
-      # FTX
-      "FTX-KEY",
-      "FTX-SIGN",
-      "FTX-TS",
+      # Kraken
+      "API-Key",
+      "API-Sign",
       # Delta Exchange
       "api-key",
       "signature",
@@ -366,18 +365,14 @@ if config_env() == :test do
       [pattern: "\"id\":\"[a-z0-9-]{36,36}\"", placeholder: "\"id\":\"***\""],
       [pattern: "\"profile_id\":\"[a-z0-9-]{36,36}\"", placeholder: "\"profile_id\":\"***\""],
       # Binance
-      [pattern: "signature=[A-Z0-9]+", placeholder: "signature=***"],
-      # FTX
-      [pattern: "username\":\"[a-zA-Z0-9@.]+\"", placeholder: "username\":\"***\""]
+      [pattern: "signature=[A-Z0-9]+", placeholder: "signature=***"]
     ],
     response_headers_blacklist: [
       # Shared
       "Set-Cookie",
       "ETag",
       "cf-request-id",
-      "CF-RAY",
-      # FTX
-      "account-id"
+      "CF-RAY"
     ]
 
   config :echo_boy, port: 4100

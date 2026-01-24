@@ -53,8 +53,6 @@ defmodule Tai.Mixfile do
       {:ex_delta_exchange, "~> 0.0.3"},
       # {:ex_deribit, github: "fremantle-industries/ex_deribit", branch: "main"},
       {:ex_deribit, "~> 0.0.9"},
-      # {:ex_ftx, github: "fremantle-industries/ex_ftx", branch: "main"},
-      {:ex_ftx, "~> 0.0.13"},
       # {:ex_okex, github: "fremantle-industries/ex_okex", branch: "main"},
       {:ex_okex, "~> 0.6"},
       {:ex_gdax, "~> 0.2"},
