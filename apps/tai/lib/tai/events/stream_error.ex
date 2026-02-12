@@ -9,6 +9,9 @@ defmodule Tai.Events.StreamError do
 
   @enforce_keys ~w(venue_id reason)a
   defstruct ~w(venue_id reason)a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end
 
 defimpl TaiEvents.LogEvent, for: Tai.Events.StreamError do

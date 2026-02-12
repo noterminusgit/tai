@@ -26,6 +26,9 @@ defmodule Tai.Events.OrderUpdateInvalidStatus do
     last_received_at
     last_venue_timestamp
   ]a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end
 
 defimpl TaiEvents.LogEvent, for: Tai.Events.OrderUpdateInvalidStatus do

@@ -21,4 +21,7 @@ defmodule Tai.Events.UpdateLiquidationPrice do
     :price,
     :order_id
   ]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

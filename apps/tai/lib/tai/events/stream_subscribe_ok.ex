@@ -11,4 +11,7 @@ defmodule Tai.Events.StreamSubscribeOk do
 
   @enforce_keys ~w[venue channel_name received_at meta]a
   defstruct ~w[venue channel_name received_at meta]a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

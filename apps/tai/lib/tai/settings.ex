@@ -7,19 +7,29 @@ defmodule Tai.Settings do
   alias __MODULE__
 
   defmodule State do
+    @moduledoc false
+
+    @type t :: %__MODULE__{
+            send_orders: boolean(),
+            name: atom()
+          }
+
     @enforce_keys ~w[send_orders name]a
     defstruct ~w[send_orders name]a
   end
 
-  @type t :: %Settings{
-          send_orders: boolean
+  @type t :: %__MODULE__{
+          send_orders: boolean()
         }
+
+  @type id :: atom()
 
   @enforce_keys ~w[send_orders]a
   defstruct ~w[send_orders]a
 
   @default_id :default
 
+  @spec start_link(keyword()) :: GenServer.on_start()
   def start_link(opts) do
     config = Keyword.fetch!(opts, :config)
     id = Keyword.get(opts, :id, @default_id)
@@ -29,20 +39,24 @@ defmodule Tai.Settings do
     GenServer.start_link(__MODULE__, state, name: name)
   end
 
+  @spec process_name(id()) :: atom()
   def process_name(id), do: :"#{__MODULE__}_#{id}"
 
+  @spec disable_send_orders!(id()) :: :ok
   def disable_send_orders!(id \\ @default_id) do
     id
     |> process_name()
     |> GenServer.call({:set_send_orders, false})
   end
 
+  @spec enable_send_orders!(id()) :: :ok
   def enable_send_orders!(id \\ @default_id) do
     id
     |> process_name()
     |> GenServer.call({:set_send_orders, true})
   end
 
+  @spec send_orders?(id()) :: boolean()
   def send_orders?(id \\ @default_id) do
     [{:send_orders, send_orders}] =
       id
@@ -52,6 +66,7 @@ defmodule Tai.Settings do
     send_orders
   end
 
+  @spec all(id()) :: t()
   def all(id \\ @default_id) do
     %Settings{send_orders: send_orders?(id)}
   end

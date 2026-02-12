@@ -21,4 +21,7 @@ defmodule Tai.Events.Settlement do
     :received_at,
     :price
   ]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

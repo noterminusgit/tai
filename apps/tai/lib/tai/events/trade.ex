@@ -29,4 +29,7 @@ defmodule Tai.Events.Trade do
     taker_side
     venue_trade_id
   ]a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end
