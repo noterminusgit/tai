@@ -27,4 +27,7 @@ defmodule Tai.Events.Funding do
     :rate,
     :rate_daily
   ]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

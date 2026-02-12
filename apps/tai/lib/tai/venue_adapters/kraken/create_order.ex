@@ -45,14 +45,11 @@ defmodule Tai.VenueAdapters.Kraken.CreateOrder do
   defp add_time_in_force(params, %{post_only: true}), do: Map.put(params, "oflags", "post")
   defp add_time_in_force(params, _), do: params
 
-  defp parse_create_response(%{"txid" => [order_id | _]}, order) do
+  defp parse_create_response(%{"txid" => [order_id | _]}, _order) do
     received_at = Timex.now()
 
     response = %Responses.CreateAccepted{
       id: order_id,
-      status: :open,
-      client_id: order.client_id,
-      venue_order_id: order_id,
       received_at: received_at
     }
 

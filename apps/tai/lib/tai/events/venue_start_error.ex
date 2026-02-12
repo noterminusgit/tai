@@ -6,6 +6,9 @@ defmodule Tai.Events.VenueStartError do
 
   @enforce_keys ~w(venue reason)a
   defstruct ~w(venue reason)a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end
 
 defimpl TaiEvents.LogEvent, for: Tai.Events.VenueStartError do

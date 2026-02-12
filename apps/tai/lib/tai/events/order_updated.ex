@@ -67,6 +67,9 @@ defmodule Tai.Events.OrderUpdated do
     updated_at
     close
   )a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end
 
 defimpl TaiEvents.LogEvent, for: Tai.Events.OrderUpdated do

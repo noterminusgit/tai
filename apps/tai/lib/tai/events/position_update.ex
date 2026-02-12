@@ -18,4 +18,7 @@ defmodule Tai.Events.PositionUpdate do
     :received_at,
     :data
   ]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

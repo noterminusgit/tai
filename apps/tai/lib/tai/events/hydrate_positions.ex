@@ -6,4 +6,7 @@ defmodule Tai.Events.HydratePositions do
 
   @enforce_keys [:venue_id, :total]
   defstruct [:venue_id, :total]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

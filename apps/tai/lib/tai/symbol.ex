@@ -3,6 +3,9 @@ defmodule Tai.Symbol do
   Transform symbols between tai and exchange formats
   """
 
+  @type symbol :: atom() | String.t()
+
+  @spec downcase(symbol()) :: String.t()
   def downcase(symbol) when is_atom(symbol) do
     symbol
     |> Atom.to_string()
@@ -14,11 +17,13 @@ defmodule Tai.Symbol do
     |> String.downcase()
   end
 
+  @spec downcase_all([symbol()]) :: [String.t()]
   def downcase_all(symbols) do
     symbols
     |> Enum.map(&downcase(&1))
   end
 
+  @spec upcase(symbol()) :: String.t()
   def upcase(symbol) when is_atom(symbol) do
     symbol
     |> Atom.to_string()
@@ -38,6 +43,8 @@ defmodule Tai.Symbol do
     |> String.to_atom()
   end
 
+  @spec base_and_quote(symbol()) ::
+          {:ok, {atom(), atom()}} | {:error, :symbol_format_must_be_base_quote | :symbol_must_be_an_atom_or_string}
   def base_and_quote(symbol) when is_binary(symbol) do
     assets = String.split(symbol, "_")
     assets_count = Enum.count(assets)

@@ -7,4 +7,7 @@ defmodule Tai.Events.BootAdvisors do
 
   @enforce_keys ~w[loaded_fleets loaded_advisors started_advisors]a
   defstruct ~w[loaded_fleets loaded_advisors started_advisors]a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

@@ -3,4 +3,7 @@ defmodule Tai.Events.BitmexStreamConnectionLimitDetails do
 
   @enforce_keys [:venue_id, :remaining]
   defstruct [:venue_id, :remaining]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

@@ -11,6 +11,9 @@ defmodule Tai.Events.AdvisorHandleMarketQuoteInvalidReturn do
   @enforce_keys ~w[advisor_id fleet_id event return_value]a
   defstruct ~w[advisor_id fleet_id event return_value]a
 
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
+
   defimpl TaiEvents.LogEvent do
     def to_data(event) do
       keys =

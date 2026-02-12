@@ -5,4 +5,7 @@ defmodule Tai.Events.StreamAuthOk do
 
   @enforce_keys ~w(venue credential)a
   defstruct ~w(venue credential)a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

@@ -9,4 +9,7 @@ defmodule Tai.Events.OrderUpdateNotFound do
 
   @enforce_keys ~w[client_id transition]a
   defstruct ~w[client_id transition]a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

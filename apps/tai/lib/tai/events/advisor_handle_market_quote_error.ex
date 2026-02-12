@@ -24,6 +24,9 @@ defmodule Tai.Events.AdvisorHandleMarketQuoteError do
     stacktrace
   ]a
 
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
+
   defimpl TaiEvents.LogEvent do
     def to_data(event) do
       keys =

@@ -18,4 +18,7 @@ defmodule Tai.Events.DeleteLiquidation do
     :received_at,
     :order_id
   ]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

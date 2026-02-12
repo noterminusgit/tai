@@ -18,4 +18,7 @@ defmodule Tai.Events.ConnectedStats do
     :bots,
     :users
   ]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

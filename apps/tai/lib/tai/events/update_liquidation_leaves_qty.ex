@@ -21,4 +21,7 @@ defmodule Tai.Events.UpdateLiquidationLeavesQty do
     :leaves_qty,
     :order_id
   ]
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

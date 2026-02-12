@@ -9,4 +9,7 @@ defmodule Tai.Events.StreamMessageInvalidOrderClientId do
 
   @enforce_keys ~w[venue_id client_id received_at]a
   defstruct ~w[venue_id client_id received_at]a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

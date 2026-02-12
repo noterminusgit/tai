@@ -10,4 +10,7 @@ defmodule Tai.Events.HydrateProducts do
 
   @enforce_keys ~w(venue_id total filtered)a
   defstruct ~w(venue_id total filtered)a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end

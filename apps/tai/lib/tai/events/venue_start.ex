@@ -6,4 +6,7 @@ defmodule Tai.Events.VenueStart do
 
   @enforce_keys ~w(venue)a
   defstruct ~w(venue)a
+
+  @spec new(map) :: t
+  def new(attrs), do: struct!(__MODULE__, attrs)
 end
