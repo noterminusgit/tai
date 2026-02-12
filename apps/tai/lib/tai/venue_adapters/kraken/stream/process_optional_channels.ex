@@ -2,35 +2,41 @@ defmodule Tai.VenueAdapters.Kraken.Stream.ProcessOptionalChannels do
   use GenServer
 
   defmodule State do
-    @type t :: %State{venue: atom, products: list}
-    defstruct ~w[venue products]a
+    @type venue_id :: Tai.Venue.id()
+    @type t :: %State{venue: venue_id}
+
+    @enforce_keys ~w(venue)a
+    defstruct ~w(venue)a
   end
 
-  def start_link(args) do
-    GenServer.start_link(__MODULE__, args, name: __MODULE__)
+  @type venue_id :: Tai.Venue.id()
+  @type state :: State.t()
+
+  @spec start_link(venue: venue_id) :: GenServer.on_start()
+  def start_link(venue: venue) do
+    state = %State{venue: venue}
+    name = to_name(venue)
+    GenServer.start_link(__MODULE__, state, name: name)
   end
 
-  def init(args) do
-    venue = Keyword.fetch!(args, :venue)
-    products = Keyword.fetch!(args, :products)
-    {:ok, %State{venue: venue, products: products}}
+  @spec to_name(venue_id) :: atom
+  def to_name(venue), do: :"#{__MODULE__}_#{venue}"
+
+  @spec init(state) :: {:ok, state}
+  def init(state) do
+    {:ok, state}
   end
 
-  def handle_msg(msg, connection_state) do
-    GenServer.cast(__MODULE__, {:handle_msg, msg, connection_state})
-    {:noreply, connection_state}
-  end
-
-  def handle_cast({:handle_msg, {:trade, trades}, _connection_state}, state) do
+  def handle_cast({:trade, _venue_symbol, trades, _received_at}, state) do
     process_trades(trades, state)
     {:noreply, state}
   end
 
-  def handle_cast({:handle_msg, _msg, _connection_state}, state) do
+  def handle_cast(_msg, state) do
     {:noreply, state}
   end
 
-  defp process_trades(trades, state) when is_list(trades) do
+  defp process_trades(trades, _state) when is_list(trades) do
     # Process trade data
     # In a production implementation, this would broadcast trade events
     :ok

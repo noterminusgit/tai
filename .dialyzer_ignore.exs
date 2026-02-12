@@ -1,4 +1,6 @@
 [
+  # Kraken adapter callback type mismatches - credentials type definition issue in Tai.Venues.Adapter
+  {~r/lib\/tai\/venue_adapters\/kraken.ex.*callback_arg_type_mismatch/, :callback_arg_type_mismatch},
   {":0:unknown_function Function IEx.dont_display_result/0 does not exist.", :unknown_function},
   {":0:unknown_function Function Tai\.LogEvent\.Atom\.__impl__/1 does not exist.",
    :unknown_function},
