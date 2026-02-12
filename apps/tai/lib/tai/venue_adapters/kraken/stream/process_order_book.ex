@@ -58,8 +58,8 @@ defmodule Tai.VenueAdapters.Kraken.Stream.ProcessOrderBook do
 
   defp extract_product(_data, venue) do
     # In a real implementation, we'd need to map the channel ID back to the product
-    # For now, this is a placeholder
-    %Tai.Markets.Product{venue_id: venue, symbol: :xbtusd}
+    # For now, this is a placeholder returning a tuple for the OrderBook API
+    {venue, :xbtusd}
   end
 
   defp parse_price_points(points) when is_list(points) do

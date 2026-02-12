@@ -13,7 +13,7 @@ defmodule Tai.VenueAdapters.Kraken.CancelOrder do
 
     case send_request(endpoint, params, credentials) do
       {:ok, %{"error" => [], "result" => _result}} ->
-        {:ok, %Responses.CancelAccepted{id: order.venue_order_id}}
+        {:ok, %Responses.CancelAccepted{id: order.venue_order_id, received_at: Timex.now()}}
 
       {:ok, %{"error" => errors}} when length(errors) > 0 ->
         parse_error(errors)
