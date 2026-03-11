@@ -16,47 +16,29 @@ Here's an example of an advisor that logs the spread between multiple products o
 
 ## Supported Venues
 
-| Venues | Live Order Book | Accounts | Orders | Products | Fees |
-| ------ | :-------------: | :------: | :----: | :------: | :--: |
-| Binance|       [x]       |   [x]    |  [x]   |   [x]    | [x]  |
-| Kraken |       [x]       |   [x]    |  [x]   |   [x]    | [x]  |
-| OkEx   |       [x]       |   [x]    |  [x]   |   [x]    | [x]  |
-| BitMEX |       [x]       |   [x]    |  [x]   |   [x]    | [x]  |
-
-## Venues In Progress
-
-| Venue             | Live Order Book | Accounts | Orders | Products | Fees |
-| ----------------- | :-------------: | :------: | :----: | :------: | :--: |
-| Deribit           |       [x]       |   [x]    |   [ ]  |   [x]    | [x]  |
-| GDAX              |       [x]       |   [x]    |   [ ]  |   [x]    | [x]  |
-| Huobi             |       [x]       |   [ ]    |   [ ]  |   [x]    | [ ]  |
-| Delta Exchange    |       [x]       |   [ ]    |   [ ]  |   [x]    | [x]  |
-| Bybit             |       [ ]       |   [ ]    |   [ ]  |   [x]    | [ ]  |
-| bit.com           |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| Bitfinex          |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| CME               |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| Phemex            |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| BTSE              |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| KuCoin            |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| BitMax            |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| Bitget            |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| MEXC              |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| PrimeXBT          |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| Gate.io           |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| Coinflex          |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
-| bitFlyer          |       [ ]       |   [ ]    |   [ ]  |   [ ]    | [ ]  |
+| Venue          | Live Order Book | Accounts | Orders | Products | Fees |
+| -------------- | :-------------: | :------: | :----: | :------: | :--: |
+| Binance        |       [x]       |   [x]    |  [x]   |   [x]    | [x]  |
+| BitMEX         |       [x]       |   [x]    |  [x]   |   [x]    | [x]  |
+| Coinbase       |       [x]       |   [x]    |  [ ]   |   [x]    | [x]  |
+| Deribit        |       [x]       |   [x]    |  [ ]   |   [x]    | [x]  |
+| Kraken         |       [x]       |   [x]    |  [x]   |   [x]    | [x]  |
+| OkEx           |       [x]       |   [x]    |  [x]   |   [x]    | [x]  |
+| Delta Exchange  |       [x]       |   [ ]    |  [ ]   |   [x]    | [x]  |
+| Huobi          |       [x]       |   [ ]    |  [ ]   |   [x]    | [ ]  |
+| Bybit          |       [ ]       |   [ ]    |  [ ]   |   [x]    | [ ]  |
 
 ## Install
 
-`tai` requires Elixir 1.11+ & Erlang/OTP 22+. Add `tai` to your list of dependencies in `mix.exs`
+`tai` requires Elixir 1.14+ & Erlang/OTP 25+. Add `tai` to your list of dependencies in `mix.exs`
 
 ```elixir
 def deps do
   [
     {:tai, git: "https://github.com/noterminusgit/tai.git"}
     # Choose your order data store
-    # {:ecto_sqlite3, "~> 0.5.6"}
-    # {:postgrex, "~> 0.15"}
+    # {:ecto_sqlite3, "~> 0.17"}
+    # {:postgrex, "~> 0.19"}
   ]
 end
 ```
@@ -111,6 +93,17 @@ Rerun ecto migrations
 ```bash
 $ mix ecto.migrate
 ```
+
+## Key Dependencies
+
+| Library | Purpose |
+| ------- | ------- |
+| [Req](https://hex.pm/packages/req) | HTTP client (replaced HTTPoison) |
+| [Fresh](https://hex.pm/packages/fresh) | WebSocket client (replaced WebSockex) |
+| [Ecto](https://hex.pm/packages/ecto) | Order persistence |
+| [Phoenix PubSub](https://hex.pm/packages/phoenix_pubsub) | Internal event bus |
+
+All venue API integrations (Binance, BitMEX, Coinbase, Deribit, Kraken, OkEx, etc.) are implemented directly within Tai using Req -- no external exchange client libraries are required.
 
 ## Help Wanted :)
 
