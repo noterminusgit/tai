@@ -5,8 +5,10 @@ defmodule Tai.VenueAdapters.Mock do
 
   @behaviour Tai.Venues.Adapter
 
+  @impl true
   def stream_supervisor, do: Tai.VenueAdapters.Mock.StreamSupervisor
 
+  @impl true
   def products(venue_id) do
     with_mock_server(fn ->
       {:products, venue_id}
@@ -18,6 +20,7 @@ defmodule Tai.VenueAdapters.Mock do
     end)
   end
 
+  @impl true
   def accounts(venue_id, credential_id, _credentials) do
     with_mock_server(fn ->
       {:accounts, venue_id, credential_id}
@@ -29,6 +32,7 @@ defmodule Tai.VenueAdapters.Mock do
     end)
   end
 
+  @impl true
   def maker_taker_fees(venue_id, credential_id, _credentials) do
     with_mock_server(fn ->
       {:maker_taker_fees, venue_id, credential_id}
@@ -40,6 +44,7 @@ defmodule Tai.VenueAdapters.Mock do
     end)
   end
 
+  @impl true
   def create_order(order, _credentials) do
     with_mock_server(fn ->
       match_attrs = %{
@@ -59,6 +64,7 @@ defmodule Tai.VenueAdapters.Mock do
     end)
   end
 
+  @impl true
   def amend_order(order, attrs, _credentials) do
     with_mock_server(fn ->
       match_attrs = Map.merge(attrs, %{venue_order_id: order.venue_order_id})
@@ -73,6 +79,7 @@ defmodule Tai.VenueAdapters.Mock do
     end)
   end
 
+  @impl true
   def amend_bulk_orders(amend_set, _credentials) do
     match_attrs =
       Enum.map(amend_set, fn {o, a} -> Map.merge(a, %{venue_order_id: o.venue_order_id}) end)
@@ -88,6 +95,7 @@ defmodule Tai.VenueAdapters.Mock do
     end)
   end
 
+  @impl true
   def cancel_order(order, _credentials) do
     with_mock_server(fn ->
       {:cancel_order, order.venue_order_id}
@@ -100,6 +108,7 @@ defmodule Tai.VenueAdapters.Mock do
     end)
   end
 
+  @impl true
   def positions(_venue_id, _credential_id, _credentials) do
     {:error, :not_supported}
   end

@@ -20,6 +20,7 @@ defmodule Tai.Orders.Transitions.Expire do
     field(:last_venue_timestamp, :utc_datetime_usec)
   end
 
+  @spec changeset(t, map) :: Ecto.Changeset.t()
   def changeset(transition, params) do
     transition
     |> cast(params, [
@@ -32,8 +33,10 @@ defmodule Tai.Orders.Transitions.Expire do
     |> validate_required([:venue_order_id, :cumulative_qty, :leaves_qty, :last_received_at])
   end
 
+  @spec from :: [atom]
   def from, do: ~w[create_accepted]a
 
+  @spec attrs(t) :: keyword
   def attrs(transition) do
     [
       venue_order_id: transition.venue_order_id,
@@ -44,6 +47,7 @@ defmodule Tai.Orders.Transitions.Expire do
     ]
   end
 
+  @spec status(atom) :: atom
   def status(_current) do
     :expired
   end

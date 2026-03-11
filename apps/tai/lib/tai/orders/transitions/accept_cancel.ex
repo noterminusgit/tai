@@ -18,14 +18,17 @@ defmodule Tai.Orders.Transitions.AcceptCancel do
     field(:last_venue_timestamp, :utc_datetime_usec)
   end
 
+  @spec changeset(t, map) :: Ecto.Changeset.t()
   def changeset(transition, params) do
     transition
     |> cast(params, [:last_received_at, :last_venue_timestamp])
     |> validate_required([:last_received_at])
   end
 
+  @spec from :: [atom]
   def from, do: ~w[pending_cancel]a
 
+  @spec attrs(t) :: keyword
   def attrs(transition) do
     [
       last_received_at: transition.last_received_at,
@@ -33,6 +36,7 @@ defmodule Tai.Orders.Transitions.AcceptCancel do
     ]
   end
 
+  @spec status(atom) :: atom
   def status(_current) do
     :cancel_accepted
   end

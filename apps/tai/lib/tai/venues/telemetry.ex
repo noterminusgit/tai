@@ -1,6 +1,7 @@
 defmodule Tai.Venues.Telemetry do
   use GenServer
 
+  @spec start_link(term) :: GenServer.on_start()
   def start_link(_) do
     {:ok, pid} = GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
     GenServer.call(pid, :create_ets_table)

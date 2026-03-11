@@ -34,6 +34,27 @@ Before making any improvements to documentation, type coverage, and test coverag
 |-----|----------|-------------|
 | Trade handler copy-paste bug | `apps/tai/lib/tai/advisor.ex:103-104` | Trade handler references `state.market_quotes` instead of `state.trades` — **FIXED in this changeset** |
 
+### Type Coverage (2026-03-11 - Pre-improvement)
+
+| Metric | Value |
+|--------|-------|
+| Files with public functions but no @spec/@impl | 109 |
+
+## Progress Updates
+
+### 2026-03-11 - Phase 1-5 Complete
+
+| Metric | Before | After | Change |
+|--------|--------|-------|--------|
+| Total tests | 625 | 665 | +40 |
+| Tests passing | 585 | 627 | +42 |
+| Files without @spec/@impl | 109 | 75 | -34 |
+| @impl true on venue adapters | 1 (Stub) | 11 (all) | +10 |
+| @spec on transition modules | 0/19 | 19/19 | +19 |
+| Architecture docs | 0 | 8 | +8 |
+| Guardrails docs | 0 | 5 | +5 |
+| ADRs | 0 | 4 | +4 |
+
 ## Decision
 
 Use these baseline metrics to track improvement across documentation, testing, and type coverage phases.
