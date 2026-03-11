@@ -9,6 +9,7 @@ defmodule Tai.VenueAdapters.Bitmex.Accounts do
 
   @spec accounts(venue_id, credential_id, credentials) ::
           {:ok, [account]} | {:error, shared_error_reason}
+  @spec accounts(atom, atom, map) :: {:ok, list} | {:error, term}
   def accounts(venue_id, credential_id, credentials) do
     venue_credentials = to_venue_credentials(credentials)
 

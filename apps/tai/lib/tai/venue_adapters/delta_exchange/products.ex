@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.DeltaExchange.Products do
   alias Tai.VenueAdapters.DeltaExchange
 
+  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     with {:ok, venue_products} <- fetch_products() do
       products = venue_products |> Enum.map(& DeltaExchange.Product.build(&1, venue_id))

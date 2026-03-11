@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Deribit.Accounts do
   defp domain, do: Application.get_env(:ex_deribit, :domain, "www.deribit.com")
 
+  @spec accounts(atom, atom, map) :: {:ok, list} | {:error, term}
   def accounts(venue_id, credential_id, credentials) do
     venue_credentials = credentials |> to_venue_credentials()
 

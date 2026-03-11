@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Binance.Products do
   @exchange_info_url "https://api.binance.com/api/v3/exchangeInfo"
 
+  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     with {:ok, %Req.Response{status: 200, body: %{"symbols" => venue_products}}} <-
            Req.get(@exchange_info_url) do

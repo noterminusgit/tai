@@ -17,6 +17,7 @@ defmodule Tai.VenueAdapters.OkEx.CancelOrder do
   @type reason :: :timeout | :connect_timeout | :not_found
 
   @spec cancel_order(order, credentials) :: {:ok, response} | {:error, reason}
+  @spec cancel_order(Tai.Orders.Order.t(), map) :: {:ok, term} | {:error, term}
   def cancel_order(order, credentials) do
     {order, credentials}
     |> send_to_venue()

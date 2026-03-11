@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Bitmex.Positions do
   alias Tai.VenueAdapters.Bitmex.HTTPClient
 
+  @spec positions(atom, atom, map) :: {:ok, list} | {:error, term}
   def positions(venue_id, credential_id, credentials) do
     venue_credentials = to_venue_credentials(credentials)
 

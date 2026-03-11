@@ -3,6 +3,7 @@ defmodule Tai.VenueAdapters.Kraken.Products do
   Fetches product information from Kraken REST API
   """
 
+  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     endpoint = "https://api.kraken.com/0/public/AssetPairs"
 

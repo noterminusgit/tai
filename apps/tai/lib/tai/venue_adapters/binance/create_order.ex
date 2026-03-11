@@ -7,6 +7,7 @@ defmodule Tai.VenueAdapters.Binance.CreateOrder do
 
   @limit "LIMIT"
 
+  @spec create_order(Tai.Orders.Order.t(), map) :: {:ok, term} | {:error, term}
   def create_order(%Tai.Orders.Order{side: side, type: :limit} = order, credentials) do
     venue_time_in_force = order.time_in_force |> to_venue_time_in_force
     venue_side = side |> Atom.to_string() |> String.upcase()

@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.OkEx.Positions do
   @base_url "https://www.okex.com"
 
+  @spec positions(atom, atom, map) :: {:ok, list} | {:error, term}
   def positions(venue_id, credential_id, credentials) do
     venue_credentials = to_venue_credentials(credentials)
 

@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Bitmex.Product do
   @format "{ISO:Extended}"
 
+  @spec build(map, atom) :: Tai.Venues.Product.t() | nil
   def build(%{"lotSize" => nil}, _), do: nil
 
   def build(instrument, venue_id) do

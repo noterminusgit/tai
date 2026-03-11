@@ -4,6 +4,7 @@ defmodule Tai.VenueAdapters.Kraken.CancelOrder do
   """
   alias Tai.Orders.Responses
 
+  @spec cancel_order(Tai.Orders.Order.t(), map) :: {:ok, term} | {:error, term}
   def cancel_order(order, credentials) do
     endpoint = "https://api.kraken.com/0/private/CancelOrder"
 
