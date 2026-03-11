@@ -1,0 +1,37 @@
+[
+  {
+    "request": {
+      "body": "nonce=1773253486105&ordertype=limit&pair=nil&price=0.007&type=buy&volume=0.000001",
+      "headers": {
+        "api-key": "***",
+        "api-sign": "***",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "method": "post",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.kraken.com/0/private/AddOrder"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"error\":[\"EAPI:Invalid key\"]}",
+      "headers": {
+        "date": "Wed, 11 Mar 2026 18:24:46 GMT",
+        "content-type": "application/json",
+        "content-length": "30",
+        "connection": "keep-alive",
+        "x-trace-id": "0ab2b8bf019cde24e6690001eb3a1718",
+        "cache-control": "no-store",
+        "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+        "x3xhqkw--pad": "ZY1%**!7%1rucPfinq|DyGdwBxxZPH7r&J+",
+        "x-proxy": "gateway",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "cf-cache-status": "DYNAMIC",
+        "x-content-type-options": "nosniff",
+        "server": "cloudflare"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]

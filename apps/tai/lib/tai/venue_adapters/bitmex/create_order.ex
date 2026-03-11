@@ -3,7 +3,7 @@ defmodule Tai.VenueAdapters.Bitmex.CreateOrder do
   Create orders for the Bitmex adapter
   """
 
-  alias Tai.VenueAdapters.Bitmex.ClientId
+  alias Tai.VenueAdapters.Bitmex.{ClientId, HTTPClient}
   alias Tai.Orders.Responses
 
   @type credentials :: Tai.Venues.Adapter.credentials()
@@ -48,9 +48,9 @@ defmodule Tai.VenueAdapters.Bitmex.CreateOrder do
     end
   end
 
-  defdelegate send_to_venue(credentials, params),
-    to: ExBitmex.Rest.Orders,
-    as: :create
+  defp send_to_venue(credentials, params) do
+    HTTPClient.post("/api/v1/order", credentials, params)
+  end
 
   defdelegate to_venue_credentials(credentials),
     to: Tai.VenueAdapters.Bitmex.Credentials,
@@ -68,10 +68,10 @@ defmodule Tai.VenueAdapters.Bitmex.CreateOrder do
   @format "{ISO:Extended}"
   defp parse_response({:ok, venue_order, _rate_limit}, _order) do
     received_at = Tai.Time.monotonic_time()
-    venue_timestamp = Timex.parse!(venue_order.timestamp, @format)
+    venue_timestamp = Timex.parse!(venue_order["timestamp"], @format)
 
     response = %Responses.CreateAccepted{
-      id: venue_order.order_id,
+      id: venue_order["orderID"],
       venue_timestamp: venue_timestamp,
       received_at: received_at
     }

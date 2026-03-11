@@ -11,7 +11,7 @@ defmodule Tai.VenueAdapters.Bitmex.NormalizeAccountTest do
   end
 
   test ".build/3 returns an account struct for Xbt from the margin response" do
-    margin = struct(ExBitmex.Margin, currency: "XBt", amount: 900_000_000)
+    margin = %{"currency" => "XBt", "amount" => 900_000_000}
 
     assert {:ok, account} = Bitmex.NormalizeAccount.build(margin, @venue, @credential)
     assert account.asset == :btc
@@ -21,7 +21,7 @@ defmodule Tai.VenueAdapters.Bitmex.NormalizeAccountTest do
   end
 
   test ".build/3 returns an error when the currency is not supported" do
-    margin = struct(ExBitmex.Margin, currency: "not-supported", amount: 900_000_000)
+    margin = %{"currency" => "not-supported", "amount" => 900_000_000}
 
     assert {:error, reason} = Bitmex.NormalizeAccount.build(margin, @venue, @credential)
     assert reason == {:unsupported_currency, "not-supported"}

@@ -5,7 +5,7 @@ defmodule Examples.MixProject do
     [
       app: :examples,
       version: "0.0.75",
-      elixir: "~> 1.11",
+      elixir: "~> 1.14",
       build_path: "../../_build",
       config_path: "../../config/config.exs",
       deps_path: "../../deps",
@@ -27,7 +27,7 @@ defmodule Examples.MixProject do
   defp deps do
     [
       {:tai, in_umbrella: true},
-      {:libcluster, "~> 3.2"}
+      {:libcluster, "~> 3.4"}
     ]
   end
 

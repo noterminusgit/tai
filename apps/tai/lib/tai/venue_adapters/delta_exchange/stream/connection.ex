@@ -31,7 +31,7 @@ defmodule Tai.VenueAdapters.DeltaExchange.Stream.Connection do
     }
 
     name = process_name(stream.venue.id)
-    WebSockex.start_link(endpoint, __MODULE__, state, name: name)
+    Fresh.start_link(endpoint, __MODULE__, state, name: {:local, name})
   end
 
   @impl true
@@ -83,7 +83,7 @@ defmodule Tai.VenueAdapters.DeltaExchange.Stream.Connection do
         Logger.error "Too many requests limit_reset_in=#{limit_reset_in}"
 
       c ->
-        Logger.warn "Unhandled error code=#{c}, context=#{inspect(context)}"
+        Logger.warning("Unhandled error code=#{c}, context=#{inspect(context)}")
     end
 
     {:ok, state}

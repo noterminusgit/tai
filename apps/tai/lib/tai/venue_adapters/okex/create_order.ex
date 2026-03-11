@@ -6,6 +6,8 @@ defmodule Tai.VenueAdapters.OkEx.CreateOrder do
   alias Tai.VenueAdapters.OkEx.ClientId
   alias Tai.Orders.Responses
 
+  @base_url "https://www.okex.com"
+
   @type credentials :: Tai.Venues.Adapter.credentials()
   @type order :: Tai.Orders.Order.t()
   @type response :: Responses.CreateAccepted.t()
@@ -21,13 +23,21 @@ defmodule Tai.VenueAdapters.OkEx.CreateOrder do
   def send_to_venue({order, credentials}) do
     venue_config = credentials |> to_venue_config
     params = order |> build_params()
-    mod = order |> module_for()
-    {mod.create_bulk_orders(params, venue_config), order}
+    {path, body} = order |> endpoint_and_body(params)
+    {authenticated_post(path, body, venue_config), order}
   end
 
-  defp module_for(%Tai.Orders.Order{product_type: :future}), do: ExOkex.Futures.Private
-  defp module_for(%Tai.Orders.Order{product_type: :swap}), do: ExOkex.Swap.Private
-  defp module_for(%Tai.Orders.Order{product_type: :spot}), do: ExOkex.Spot.Private
+  defp endpoint_and_body(%Tai.Orders.Order{product_type: :future}, params) do
+    {"/api/futures/v3/orders", params}
+  end
+
+  defp endpoint_and_body(%Tai.Orders.Order{product_type: :swap}, params) do
+    {"/api/swap/v3/orders", params}
+  end
+
+  defp endpoint_and_body(%Tai.Orders.Order{product_type: :spot}, params) do
+    {"/api/spot/v3/batch_orders", params}
+  end
 
   defp build_params(%Tai.Orders.Order{product_type: :future} = order) do
     %{
@@ -147,5 +157,45 @@ defmodule Tai.VenueAdapters.OkEx.CreateOrder do
     received_at = Tai.Time.monotonic_time()
     response = %Responses.CreateAccepted{id: venue_order_id, received_at: received_at}
     {:ok, response}
+  end
+
+  defp authenticated_post(path, body, credentials) do
+    timestamp = DateTime.utc_now() |> DateTime.to_iso8601()
+    method = "POST"
+    json_body = Jason.encode!(body)
+    message = timestamp <> method <> path <> json_body
+
+    decoded_secret =
+      case Base.decode64(credentials[:api_secret]) do
+        {:ok, secret} -> secret
+        :error -> raise ArgumentError, "invalid base64 in api_secret credential"
+      end
+
+    signature = :crypto.mac(:hmac, :sha256, decoded_secret, message) |> Base.encode64()
+
+    headers = [
+      {"OK-ACCESS-KEY", credentials[:api_key]},
+      {"OK-ACCESS-SIGN", signature},
+      {"OK-ACCESS-TIMESTAMP", timestamp},
+      {"OK-ACCESS-PASSPHRASE", credentials[:api_passphrase]},
+      {"Content-Type", "application/json"}
+    ]
+
+    case Req.post("#{@base_url}#{path}", headers: headers, body: json_body) do
+      {:ok, %Req.Response{status: 200, body: resp_body}} ->
+        {:ok, resp_body}
+
+      {:ok, %Req.Response{body: resp_body}} ->
+        {:error, resp_body}
+
+      {:error, %Req.TransportError{reason: :timeout}} ->
+        {:error, :timeout}
+
+      {:error, %Req.TransportError{reason: :connect_timeout}} ->
+        {:error, :connect_timeout}
+
+      {:error, reason} ->
+        {:error, reason}
+    end
   end
 end

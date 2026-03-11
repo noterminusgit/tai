@@ -1,4 +1,4 @@
-defmodule Tai.Events.AdvisorHandleMarketQuoteErrorTest do
+defmodule Tai.Events.AdvisorHandleEventErrorTest do
   use ExUnit.Case, async: true
 
   test ".to_data/1 transforms error & stacktrace to a string" do

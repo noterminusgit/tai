@@ -6,11 +6,11 @@
       "method": "get",
       "options": [],
       "request_body": "",
-      "url": "https://api.binance.com/api/v3/exchangeInfo?"
+      "url": "https://api.binance.com/api/v3/exchangeInfo"
     },
     "response": {
       "binary": false,
-      "body": "timeout",
+      "body": "%Mint.TransportError{reason: :timeout}",
       "headers": [],
       "status_code": null,
       "type": "error"

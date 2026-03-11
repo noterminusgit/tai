@@ -3,7 +3,7 @@
     "request": {
       "body": "",
       "headers": {
-        "X-MBX-APIKEY": "***"
+        "x-mbx-apikey": "***"
       },
       "method": "get",
       "options": [],
@@ -12,7 +12,7 @@
     },
     "response": {
       "binary": false,
-      "body": "timeout",
+      "body": "%Mint.TransportError{reason: :timeout}",
       "headers": [],
       "status_code": null,
       "type": "error"

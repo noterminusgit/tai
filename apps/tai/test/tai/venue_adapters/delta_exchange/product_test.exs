@@ -49,17 +49,21 @@ defmodule Tai.VenueAdapters.DeltaExchange.ProductTest do
     assert product.type == :move
   end
 
-  @quoting_asset struct(ExDeltaExchange.Product.Asset, symbol: "USDT")
-  @default_attrs [
-    contract_unit_currency: "BTC",
-    tick_size: "0.5",
-    maker_commission_rate: "0.0005",
-    taker_commission_rate: "0.0005",
-    contract_value: "1",
-    quoting_asset: @quoting_asset
-  ]
+  @quoting_asset %{"symbol" => "USDT"}
+  @default_attrs %{
+    "contract_unit_currency" => "BTC",
+    "tick_size" => "0.5",
+    "maker_commission_rate" => "0.0005",
+    "taker_commission_rate" => "0.0005",
+    "contract_value" => "1",
+    "quoting_asset" => @quoting_asset
+  }
   defp build_venue_product(attrs) do
-    combined_attrs = Keyword.merge(@default_attrs, attrs)
-    struct(ExDeltaExchange.Product, combined_attrs)
+    combined =
+      Enum.reduce(attrs, @default_attrs, fn {k, v}, acc ->
+        Map.put(acc, Atom.to_string(k), v)
+      end)
+
+    combined
   end
 end

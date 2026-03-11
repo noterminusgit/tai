@@ -1,19 +1,26 @@
 defmodule Tai.VenueAdapters.Binance.Accounts do
-  def accounts(venue_id, credential_id, credentials) do
-    venue_credentials = struct!(ExBinance.Credentials, credentials)
+  alias Tai.VenueAdapters.Binance.Auth
 
-    with {:ok, venue_account} <- ExBinance.Spot.Private.account(venue_credentials) do
-      accounts = venue_account.balances |> Enum.map(&build(&1, venue_id, credential_id))
+  def accounts(venue_id, credential_id, credentials) do
+    with {:ok, %Req.Response{status: 200, body: venue_account}} <-
+           Auth.signed_request(:get, "/api/v3/account", credentials) do
+      accounts =
+        venue_account["balances"]
+        |> Enum.map(&build(&1, venue_id, credential_id))
+
       {:ok, accounts}
     else
-      {:error, :receive_window} = error ->
-        error
+      {:ok, %Req.Response{body: %{"code" => -1021}}} ->
+        {:error, :receive_window}
 
-      {:error, {:binance_error, %{"code" => -2014, "msg" => "API-key format invalid." = reason}}} ->
+      {:ok, %Req.Response{body: %{"code" => -2014, "msg" => "API-key format invalid." = reason}}} ->
         {:error, {:credentials, reason}}
 
-      {:error, {:http_error, %HTTPoison.Error{reason: "timeout"}}} ->
+      {:error, %Req.TransportError{reason: :timeout}} ->
         {:error, :timeout}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 

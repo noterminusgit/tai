@@ -3,20 +3,20 @@
     "request": {
       "body": "",
       "headers": {
-        "Content-Type": "application/json",
-        "CB-ACCESS-KEY": "***",
-        "CB-ACCESS-SIGN": "***",
-        "CB-ACCESS-TIMESTAMP": "***",
-        "CB-ACCESS-PASSPHRASE": "***"
+        "content-type": "application/json",
+        "cb-access-key": "***",
+        "cb-access-sign": "***",
+        "cb-access-timestamp": "***",
+        "cb-access-passphrase": "***"
       },
       "method": "get",
       "options": [],
       "request_body": "",
-      "url": "https://api.pro.coinbase.com/products"
+      "url": "https://api.exchange.coinbase.com/products"
     },
     "response": {
       "binary": false,
-      "body": "timeout",
+      "body": "%Mint.TransportError{reason: :timeout}",
       "headers": [],
       "status_code": null,
       "type": "error"

@@ -1,0 +1,37 @@
+[
+  {
+    "request": {
+      "body": "nonce=1773253488009&txid=1",
+      "headers": {
+        "api-key": "***",
+        "api-sign": "***",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "method": "post",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.kraken.com/0/private/CancelOrder"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"error\":[\"EAPI:Invalid key\"]}",
+      "headers": {
+        "date": "Wed, 11 Mar 2026 18:24:48 GMT",
+        "content-type": "application/json",
+        "content-length": "30",
+        "connection": "keep-alive",
+        "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+        "x-trace-id": "0ab2b8bc019cde24edda0001bd7c3518",
+        "cache-control": "no-store",
+        "th4ahl53-pad": "A%~.ta1yj0!p*IsC0CffdCy#IWmi4uJjJr",
+        "x-proxy": "gateway",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "cf-cache-status": "DYNAMIC",
+        "x-content-type-options": "nosniff",
+        "server": "cloudflare"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]

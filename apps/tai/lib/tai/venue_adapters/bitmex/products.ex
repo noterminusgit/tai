@@ -1,4 +1,6 @@
 defmodule Tai.VenueAdapters.Bitmex.Products do
+  alias Tai.VenueAdapters.Bitmex.HTTPClient
+
   def products(venue_id) do
     get_paginated_products([], venue_id, 0)
   end
@@ -9,11 +11,11 @@ defmodule Tai.VenueAdapters.Bitmex.Products do
 
   @count 500
   defp get_paginated_products(acc, venue_id, start) do
-    case ExBitmex.Rest.Instrument.Index.get(%{start: start, count: @count}) do
-      {:ok, [], _rate_limit} ->
+    case HTTPClient.get_unauthenticated("/api/v1/instrument", %{start: start, count: @count}) do
+      {:ok, []} ->
         {:ok, acc}
 
-      {:ok, instruments, _rate_limit} ->
+      {:ok, instruments} ->
         products =
           instruments
           |> Enum.map(&Tai.VenueAdapters.Bitmex.Product.build(&1, venue_id))
@@ -21,7 +23,7 @@ defmodule Tai.VenueAdapters.Bitmex.Products do
 
         get_paginated_products(acc ++ products, venue_id, start + @count)
 
-      {:error, reason, _} ->
+      {:error, reason} ->
         {:error, reason}
     end
   end

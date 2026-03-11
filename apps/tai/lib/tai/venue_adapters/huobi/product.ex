@@ -1,32 +1,39 @@
 defmodule Tai.VenueAdapters.Huobi.Product do
-  alias ExHuobi.Futures
-
   @date_format "{YYYY}{0M}{0D}"
   @date_time_format "#{@date_format} {h24}:{m}"
   @settlement_time "16:00"
   @zone "Etc/UTC"
 
-  def build(%Futures.Contract{} = contract, venue_id) do
-    listing = contract.create_date |> Timex.parse!(@date_format) |> DateTime.from_naive!(@zone)
+  def build(contract, venue_id) do
+    create_date = contract["create_date"]
+    delivery_date = contract["delivery_date"]
+    contract_code = contract["contract_code"]
+    contract_type = contract["contract_type"]
+    contract_status = contract["contract_status"]
+    price_tick = contract["price_tick"]
+    contract_size = contract["contract_size"]
+    symbol = contract["symbol"]
+
+    listing = create_date |> Timex.parse!(@date_format) |> DateTime.from_naive!(@zone)
 
     expiry =
-      "#{contract.delivery_date} #{@settlement_time}"
+      "#{delivery_date} #{@settlement_time}"
       |> Timex.parse!(@date_time_format)
       |> DateTime.from_naive!(@zone)
 
     build_product(
       type: :future,
       venue_id: venue_id,
-      venue_symbol: contract.contract_code,
-      alias: contract.contract_type,
-      base: contract.symbol,
+      venue_symbol: contract_code,
+      alias: contract_type,
+      base: symbol,
       quote: "USD",
       listing: listing,
       expiry: expiry,
-      venue_status: contract.contract_status,
-      venue_price_increment: contract.price_tick,
+      venue_status: contract_status,
+      venue_price_increment: price_tick,
       venue_size_increment: 1,
-      value: contract.contract_size,
+      value: contract_size,
       is_inverse: true,
       is_quanto: false
     )

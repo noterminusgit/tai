@@ -1,5 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.NormalizeAccount do
-  @type margin :: ExBitmex.Margin.t()
+  @type margin :: map()
   @type venue_id :: Tai.Venue.id()
   @type credential_id :: Tai.Venue.credential_id()
   @type account :: Tai.Venues.Account.t()
@@ -24,7 +24,7 @@ defmodule Tai.VenueAdapters.Bitmex.NormalizeAccount do
   @spec build(margin, venue_id, credential_id) ::
           {:ok, account} | {:error, {:unsupported_currency, currency}}
   def build(
-        %ExBitmex.Margin{currency: "XBt", amount: amount},
+        %{"currency" => "XBt", "amount" => amount},
         venue_id,
         credential_id
       ) do
@@ -44,6 +44,6 @@ defmodule Tai.VenueAdapters.Bitmex.NormalizeAccount do
   end
 
   def build(margin, _, _) do
-    {:error, {:unsupported_currency, margin.currency}}
+    {:error, {:unsupported_currency, margin["currency"]}}
   end
 end

@@ -34,7 +34,7 @@ defmodule Tai.VenueAdapters.OkEx.Stream.Connection do
     }
 
     name = process_name(stream.venue.id)
-    WebSockex.start_link(endpoint, __MODULE__, state, name: name)
+    Fresh.start_link(endpoint, __MODULE__, state, name: {:local, name})
   end
 
   @optional_channels [

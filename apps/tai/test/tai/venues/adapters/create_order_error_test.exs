@@ -1,10 +1,10 @@
 defmodule Tai.Venues.Adapters.CreateOrderErrorTest do
   use Tai.TestSupport.DataCase, async: false
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Finch
   import Mock
 
   setup_all do
-    HTTPoison.start()
+    :ok
   end
 
   Tai.TestSupport.Helpers.test_venue_adapters_create_order_error()
@@ -22,11 +22,13 @@ defmodule Tai.Venues.Adapters.CreateOrderErrorTest do
 
       test "#{venue.id} #{error_reason}" do
         order = build_order(@venue.id, :buy, :gtc, action: :unfilled)
-        error = {:error, %HTTPoison.Error{reason: @error_reason}}
+        error = {:error, %Req.TransportError{reason: @error_reason}}
 
-        with_mock HTTPoison,
-          request: fn _url -> error end,
-          post: fn _url, _body, _headers -> error end do
+        with_mock Req,
+          get: fn _url, _opts -> error end,
+          post: fn _url, _opts -> error end,
+          put: fn _url, _opts -> error end,
+          request: fn _opts -> error end do
           assert {:error, reason} = Tai.Venues.Client.create_order(order)
           assert reason == @error_reason
         end

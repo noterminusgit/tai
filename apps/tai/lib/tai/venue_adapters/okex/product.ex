@@ -1,26 +1,24 @@
 defmodule Tai.VenueAdapters.OkEx.Product do
-  alias ExOkex.{Futures, Swap, Spot}
-
   @iso_date_format "{ISOdate}"
   @zone "Etc/UTC"
 
-  def build(%Futures.Instrument{} = instrument, venue_id) do
-    listing = instrument.listing |> Timex.parse!(@iso_date_format) |> DateTime.from_naive!(@zone)
-    expiry = instrument.delivery |> Timex.parse!(@iso_date_format) |> DateTime.from_naive!(@zone)
-    is_inverse = instrument.is_inverse == "true"
+  def build(instrument, :future, venue_id) do
+    listing = instrument["listing"] |> Timex.parse!(@iso_date_format) |> DateTime.from_naive!(@zone)
+    expiry = instrument["delivery"] |> Timex.parse!(@iso_date_format) |> DateTime.from_naive!(@zone)
+    is_inverse = instrument["is_inverse"] == "true"
 
     build_product(
       type: :future,
       venue_id: venue_id,
-      venue_symbol: instrument.instrument_id,
-      alias: instrument.alias,
-      base: instrument.base_currency,
-      quote: instrument.quote_currency,
+      venue_symbol: instrument["instrument_id"],
+      alias: instrument["alias"],
+      base: instrument["base_currency"],
+      quote: instrument["quote_currency"],
       listing: listing,
       expiry: expiry,
-      venue_price_increment: instrument.tick_size,
-      venue_size_increment: instrument.trade_increment,
-      value: instrument.contract_val,
+      venue_price_increment: instrument["tick_size"],
+      venue_size_increment: instrument["trade_increment"],
+      value: instrument["contract_val"],
       value_side: :quote,
       is_inverse: is_inverse,
       is_quanto: false
@@ -28,36 +26,36 @@ defmodule Tai.VenueAdapters.OkEx.Product do
   end
 
   @iso_extended_format "{ISO:Extended}"
-  def build(%Swap.Instrument{} = instrument, venue_id) do
-    listing = Timex.parse!(instrument.listing, @iso_extended_format)
-    is_inverse = instrument.is_inverse == "true"
+  def build(instrument, :swap, venue_id) do
+    listing = Timex.parse!(instrument["listing"], @iso_extended_format)
+    is_inverse = instrument["is_inverse"] == "true"
 
     build_product(
       type: :swap,
       venue_id: venue_id,
-      venue_symbol: instrument.instrument_id,
-      base: instrument.base_currency,
-      quote: instrument.quote_currency,
+      venue_symbol: instrument["instrument_id"],
+      base: instrument["base_currency"],
+      quote: instrument["quote_currency"],
       listing: listing,
-      venue_price_increment: instrument.tick_size,
-      venue_size_increment: instrument.size_increment,
-      value: instrument.contract_val,
+      venue_price_increment: instrument["tick_size"],
+      venue_size_increment: instrument["size_increment"],
+      value: instrument["contract_val"],
       value_side: :quote,
       is_inverse: is_inverse,
       is_quanto: false
     )
   end
 
-  def build(%Spot.Instrument{} = instrument, venue_id) do
+  def build(instrument, :spot, venue_id) do
     build_product(
       type: :spot,
       venue_id: venue_id,
-      venue_symbol: instrument.instrument_id,
-      base: instrument.base_currency,
-      quote: instrument.quote_currency,
-      venue_price_increment: instrument.tick_size,
-      venue_size_increment: instrument.size_increment,
-      venue_min_size: instrument.min_size,
+      venue_symbol: instrument["instrument_id"],
+      base: instrument["base_currency"],
+      quote: instrument["quote_currency"],
+      venue_price_increment: instrument["tick_size"],
+      venue_size_increment: instrument["size_increment"],
+      venue_min_size: instrument["min_size"],
       value: 1,
       value_side: :base,
       is_inverse: false,

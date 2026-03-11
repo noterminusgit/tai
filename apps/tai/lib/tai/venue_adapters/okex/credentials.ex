@@ -1,3 +1,3 @@
 defmodule Tai.VenueAdapters.OkEx.Credentials do
-  def from(credentials), do: ExOkex.Config |> struct!(credentials)
+  def from(credentials), do: Map.new(credentials)
 end

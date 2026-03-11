@@ -28,7 +28,13 @@ defmodule Tai.VenueAdapters.Gdax.Product do
   end
 
   defp product_ids do
-    ExGdax.list_products()
+    case Req.get("https://api.exchange.coinbase.com/products") do
+      {:ok, %Req.Response{status: 200, body: body}} when is_list(body) ->
+        {:ok, body}
+
+      _ ->
+        {:ok, []}
+    end
     |> extract_product_ids
   end
 

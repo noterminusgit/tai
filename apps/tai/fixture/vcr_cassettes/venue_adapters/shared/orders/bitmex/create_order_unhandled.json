@@ -3,7 +3,7 @@
     "request": {
       "body": "{\"ordType\":\"Limit\",\"orderQty\":\"1000000\",\"price\":\"10000.5\",\"side\":\"Buy\",\"symbol\":\"XBTH19\",\"timeInForce\":\"GoodTillCancel\"}",
       "headers": {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
         "api-nonce": "***",
         "api-key": "***",
         "api-signature": "***"
@@ -17,16 +17,16 @@
       "binary": false,
       "body": "{\"error\":{\"message\":\"Mock Unhandled Reason\",\"name\":\"ValidationError\"}}",
       "headers": {
-        "Date": "Fri, 14 Dec 2018 05:49:58 GMT",
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": "117",
-        "Connection": "keep-alive",
-        "X-RateLimit-Limit": "300",
-        "X-RateLimit-Remaining": "299",
-        "X-RateLimit-Reset": "1544766599",
-        "X-Powered-By": "Profit",
-        "ETag": "W/\"75-NkhZ2yagbbBrPmISkM4pFeQeioo\"",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+        "date": "Fri, 14 Dec 2018 05:49:58 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "117",
+        "connection": "keep-alive",
+        "x-ratelimit-limit": "300",
+        "x-ratelimit-remaining": "299",
+        "x-ratelimit-reset": "1544766599",
+        "x-powered-by": "Profit",
+        "etag": "W/\"75-NkhZ2yagbbBrPmISkM4pFeQeioo\"",
+        "strict-transport-security": "max-age=31536000; includeSubDomains"
       },
       "status_code": 400,
       "type": "ok"

@@ -12,20 +12,18 @@ defmodule Tai.VenuesAdapters.OkEx.ProductTest do
 
   describe ".build/2" do
     test "returns a product struct from a venue futures instrument" do
-      attrs = %{
-        instrument_id: "BTC-USDT-200327",
-        base_currency: "BTC",
-        quote_currency: "USDT",
-        trade_increment: "1",
-        tick_size: "0.01",
-        contract_val: "100",
-        listing: "2019-12-13",
-        delivery: "2020-03-27"
+      instrument = %{
+        "instrument_id" => "BTC-USDT-200327",
+        "base_currency" => "BTC",
+        "quote_currency" => "USDT",
+        "trade_increment" => "1",
+        "tick_size" => "0.01",
+        "contract_val" => "100",
+        "listing" => "2019-12-13",
+        "delivery" => "2020-03-27"
       }
 
-      instrument = struct(ExOkex.Futures.Instrument, attrs)
-
-      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :venue_a)
+      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :future, :venue_a)
       assert product.venue_id == :venue_a
       assert product.symbol == :btc_usdt_200327
       assert product.venue_symbol == "BTC-USDT-200327"
@@ -45,21 +43,19 @@ defmodule Tai.VenuesAdapters.OkEx.ProductTest do
     end
 
     test "returns a product struct from a venue swap instrument" do
-      attrs = %{
-        instrument_id: "BTC-USDT-SWAP",
-        base_currency: "BTC",
-        quote_currency: "USDT",
-        size_increment: "1",
-        tick_size: "0.01",
-        contract_val: "100",
-        listing: "2019-11-12T11:16:48.000Z",
-        delivery: "2020-01-04T08:00:00.000Z",
-        is_inverse: "false"
+      instrument = %{
+        "instrument_id" => "BTC-USDT-SWAP",
+        "base_currency" => "BTC",
+        "quote_currency" => "USDT",
+        "size_increment" => "1",
+        "tick_size" => "0.01",
+        "contract_val" => "100",
+        "listing" => "2019-11-12T11:16:48.000Z",
+        "delivery" => "2020-01-04T08:00:00.000Z",
+        "is_inverse" => "false"
       }
 
-      instrument = struct(ExOkex.Swap.Instrument, attrs)
-
-      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :venue_a)
+      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :swap, :venue_a)
       assert product.venue_id == :venue_a
       assert product.symbol == :btc_usdt_swap
       assert product.venue_symbol == "BTC-USDT-SWAP"
@@ -79,18 +75,16 @@ defmodule Tai.VenuesAdapters.OkEx.ProductTest do
     end
 
     test "returns a product struct from a venue spot instrument" do
-      attrs = %{
-        instrument_id: "BTC-USDT",
-        base_currency: "BTC",
-        quote_currency: "USDT",
-        size_increment: "0.00000001",
-        min_size: "0.001",
-        tick_size: "0.1"
+      instrument = %{
+        "instrument_id" => "BTC-USDT",
+        "base_currency" => "BTC",
+        "quote_currency" => "USDT",
+        "size_increment" => "0.00000001",
+        "min_size" => "0.001",
+        "tick_size" => "0.1"
       }
 
-      instrument = struct(ExOkex.Spot.Instrument, attrs)
-
-      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :venue_a)
+      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :spot, :venue_a)
       assert product.venue_id == :venue_a
       assert product.symbol == :btc_usdt
       assert product.venue_symbol == "BTC-USDT"
@@ -110,21 +104,19 @@ defmodule Tai.VenuesAdapters.OkEx.ProductTest do
     end
 
     test "futures products can be inverse" do
-      attrs = %{
-        instrument_id: "BTC-USD-200327",
-        base_currency: "BTC",
-        quote_currency: "USDT",
-        trade_increment: "1",
-        tick_size: "0.01",
-        contract_val: "100",
-        listing: "2019-12-13",
-        delivery: "2020-03-27",
-        is_inverse: "true"
+      instrument = %{
+        "instrument_id" => "BTC-USD-200327",
+        "base_currency" => "BTC",
+        "quote_currency" => "USDT",
+        "trade_increment" => "1",
+        "tick_size" => "0.01",
+        "contract_val" => "100",
+        "listing" => "2019-12-13",
+        "delivery" => "2020-03-27",
+        "is_inverse" => "true"
       }
 
-      instrument = struct(ExOkex.Futures.Instrument, attrs)
-
-      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :venue_a)
+      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :future, :venue_a)
       assert product.venue_id == :venue_a
       assert product.symbol == :btc_usd_200327
       assert product.venue_symbol == "BTC-USD-200327"
@@ -132,21 +124,19 @@ defmodule Tai.VenuesAdapters.OkEx.ProductTest do
     end
 
     test "swap products can be inverse" do
-      attrs = %{
-        instrument_id: "BTC-USD-SWAP",
-        base_currency: "BTC",
-        quote_currency: "USDT",
-        size_increment: "1",
-        tick_size: "0.01",
-        contract_val: "100",
-        listing: "2019-11-12T11:16:48.000Z",
-        delivery: "2020-01-04T08:00:00.000Z",
-        is_inverse: "true"
+      instrument = %{
+        "instrument_id" => "BTC-USD-SWAP",
+        "base_currency" => "BTC",
+        "quote_currency" => "USDT",
+        "size_increment" => "1",
+        "tick_size" => "0.01",
+        "contract_val" => "100",
+        "listing" => "2019-11-12T11:16:48.000Z",
+        "delivery" => "2020-01-04T08:00:00.000Z",
+        "is_inverse" => "true"
       }
 
-      instrument = struct(ExOkex.Swap.Instrument, attrs)
-
-      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :venue_a)
+      product = Tai.VenueAdapters.OkEx.Product.build(instrument, :swap, :venue_a)
       assert product.venue_id == :venue_a
       assert product.symbol == :btc_usd_swap
       assert product.venue_symbol == "BTC-USD-SWAP"

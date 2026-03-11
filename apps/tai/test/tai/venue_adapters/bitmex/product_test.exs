@@ -12,16 +12,16 @@ defmodule Tai.VenuesAdapters.Bitmex.ProductTest do
 
   describe ".build/2" do
     @base_attrs %{
-      symbol: "XBTUSD",
-      underlying: "XBT",
-      quote_currency: "USD",
-      state: "Open",
-      lot_size: 1,
-      tick_size: 0.5
+      "symbol" => "XBTUSD",
+      "underlying" => "XBT",
+      "quoteCurrency" => "USD",
+      "state" => "Open",
+      "lotSize" => 1,
+      "tickSize" => 0.5
     }
 
     test "returns a product struct from a venue instrument" do
-      instrument = struct(ExBitmex.Instrument, @base_attrs)
+      instrument = @base_attrs
 
       product = Tai.VenueAdapters.Bitmex.Product.build(instrument, :venue_a)
       assert product.venue_id == :venue_a
@@ -35,24 +35,21 @@ defmodule Tai.VenuesAdapters.Bitmex.ProductTest do
     end
 
     test "type is :future when there is an expiry" do
-      attrs = Map.merge(@base_attrs, %{expiry: "2020-06-26T12:00:00.000Z"})
-      instrument = struct(ExBitmex.Instrument, attrs)
+      instrument = Map.merge(@base_attrs, %{"expiry" => "2020-06-26T12:00:00.000Z"})
 
       product = Tai.VenueAdapters.Bitmex.Product.build(instrument, :venue_a)
       assert product.type == :future
     end
 
     test "type is :swap when there is no expiry" do
-      attrs = Map.merge(@base_attrs, %{expiry: nil})
-      instrument = struct(ExBitmex.Instrument, attrs)
+      instrument = Map.merge(@base_attrs, %{"expiry" => nil})
 
       product = Tai.VenueAdapters.Bitmex.Product.build(instrument, :venue_a)
       assert product.type == :swap
     end
 
     test "assigns maker/taker fee when present" do
-      attrs = Map.merge(@base_attrs, %{maker_fee: "-0.025", taker_fee: "0.05"})
-      instrument = struct(ExBitmex.Instrument, attrs)
+      instrument = Map.merge(@base_attrs, %{"makerFee" => "-0.025", "takerFee" => "0.05"})
 
       product = Tai.VenueAdapters.Bitmex.Product.build(instrument, :venue_a)
       assert product.venue_id == :venue_a
@@ -62,8 +59,7 @@ defmodule Tai.VenuesAdapters.Bitmex.ProductTest do
     end
 
     test "assigns max size when present" do
-      attrs = Map.merge(@base_attrs, %{max_order_qty: 100})
-      instrument = struct(ExBitmex.Instrument, attrs)
+      instrument = Map.merge(@base_attrs, %{"maxOrderQty" => 100})
 
       product = Tai.VenueAdapters.Bitmex.Product.build(instrument, :venue_a)
       assert product.venue_id == :venue_a
@@ -72,8 +68,7 @@ defmodule Tai.VenuesAdapters.Bitmex.ProductTest do
     end
 
     test "assigns max price when present" do
-      attrs = Map.merge(@base_attrs, %{max_price: 100_000})
-      instrument = struct(ExBitmex.Instrument, attrs)
+      instrument = Map.merge(@base_attrs, %{"maxPrice" => 100_000})
 
       product = Tai.VenueAdapters.Bitmex.Product.build(instrument, :venue_a)
       assert product.venue_id == :venue_a
@@ -82,13 +77,11 @@ defmodule Tai.VenuesAdapters.Bitmex.ProductTest do
     end
 
     test "assigns listing & expiry when present" do
-      attrs =
+      instrument =
         Map.merge(@base_attrs, %{
-          listing: "2019-12-13T06:00:00.000Z",
-          expiry: "2020-03-27T12:00:00.000Z"
+          "listing" => "2019-12-13T06:00:00.000Z",
+          "expiry" => "2020-03-27T12:00:00.000Z"
         })
-
-      instrument = struct(ExBitmex.Instrument, attrs)
 
       product = Tai.VenueAdapters.Bitmex.Product.build(instrument, :venue_a)
       assert product.venue_id == :venue_a
@@ -98,7 +91,7 @@ defmodule Tai.VenuesAdapters.Bitmex.ProductTest do
     end
 
     test "returns nil when instrument lot_size is nil" do
-      instrument = struct(ExBitmex.Instrument, lot_size: nil)
+      instrument = %{"lotSize" => nil}
 
       assert Tai.VenueAdapters.Bitmex.Product.build(instrument, :venue_a) == nil
     end

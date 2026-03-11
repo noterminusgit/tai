@@ -3,7 +3,7 @@
     "request": {
       "body": "{\"ordType\":\"Limit\",\"orderQty\":\"2\",\"price\":\"2001.5\",\"side\":\"Buy\",\"symbol\":\"XBTH19\",\"timeInForce\":\"GoodTillCancel\",\"execInst\":\"ParticipateDoNotInitiate\"}",
       "headers": {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
         "api-nonce": "***",
         "api-key": "***",
         "api-signature": "***"
@@ -17,16 +17,16 @@
       "binary": false,
       "body": "{\"orderID\":\"d359e48a-76d7-f67d-8bb1-3f589db8e5e8\",\"clOrdID\":\"\",\"clOrdLinkID\":\"\",\"account\":158677,\"symbol\":\"XBTH19\",\"side\":\"Buy\",\"simpleOrderQty\":null,\"orderQty\":2,\"price\":2001.5,\"displayQty\":null,\"stopPx\":null,\"pegOffsetValue\":null,\"pegPriceType\":\"\",\"currency\":\"USD\",\"settlCurrency\":\"XBt\",\"ordType\":\"Limit\",\"timeInForce\":\"GoodTillCancel\",\"execInst\":\"ParticipateDoNotInitiate\",\"contingencyType\":\"\",\"exDestination\":\"XBME\",\"ordStatus\":\"New\",\"triggered\":\"\",\"workingIndicator\":true,\"ordRejReason\":\"\",\"simpleLeavesQty\":null,\"leavesQty\":2,\"simpleCumQty\":null,\"cumQty\":0,\"avgPx\":null,\"multiLegReportingType\":\"SingleSecurity\",\"text\":\"Submitted via API.\",\"transactTime\":\"2018-12-18T22:33:39.635Z\",\"timestamp\":\"2018-12-18T22:33:39.635Z\"}",
       "headers": {
-        "Date": "Tue, 18 Dec 2018 22:33:39 GMT",
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": "726",
-        "Connection": "keep-alive",
-        "X-RateLimit-Limit": "300",
-        "X-RateLimit-Remaining": "299",
-        "X-RateLimit-Reset": "1545172420",
-        "X-Powered-By": "Profit",
-        "ETag": "W/\"2d6-MEGJbZG4e18UoajlbxroBTaxxNc\"",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+        "date": "Tue, 18 Dec 2018 22:33:39 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "726",
+        "connection": "keep-alive",
+        "x-ratelimit-limit": "300",
+        "x-ratelimit-remaining": "299",
+        "x-ratelimit-reset": "1545172420",
+        "x-powered-by": "Profit",
+        "etag": "W/\"2d6-MEGJbZG4e18UoajlbxroBTaxxNc\"",
+        "strict-transport-security": "max-age=31536000; includeSubDomains"
       },
       "status_code": 200,
       "type": "ok"
@@ -36,7 +36,7 @@
     "request": {
       "body": "{\"leavesQty\":\"10\",\"orderID\":\"d359e48a-76d7-f67d-8bb1-3f589db8e5e8\",\"price\":\"2300.5\"}",
       "headers": {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
         "api-nonce": "***",
         "api-key": "***",
         "api-signature": "***"
@@ -50,16 +50,16 @@
       "binary": false,
       "body": "{\"orderID\":\"d359e48a-76d7-f67d-8bb1-3f589db8e5e8\",\"clOrdID\":\"\",\"clOrdLinkID\":\"\",\"account\":158677,\"symbol\":\"XBTH19\",\"side\":\"Buy\",\"simpleOrderQty\":null,\"orderQty\":10,\"price\":2300.5,\"displayQty\":null,\"stopPx\":null,\"pegOffsetValue\":null,\"pegPriceType\":\"\",\"currency\":\"USD\",\"settlCurrency\":\"XBt\",\"ordType\":\"Limit\",\"timeInForce\":\"GoodTillCancel\",\"execInst\":\"ParticipateDoNotInitiate\",\"contingencyType\":\"\",\"exDestination\":\"XBME\",\"ordStatus\":\"New\",\"triggered\":\"\",\"workingIndicator\":true,\"ordRejReason\":\"\",\"simpleLeavesQty\":null,\"leavesQty\":10,\"simpleCumQty\":null,\"cumQty\":0,\"avgPx\":null,\"multiLegReportingType\":\"SingleSecurity\",\"text\":\"Amended leavesQty price: Amended via API.\\nSubmitted via API.\",\"transactTime\":\"2018-12-18T22:33:39.974Z\",\"timestamp\":\"2018-12-18T22:33:39.974Z\"}",
       "headers": {
-        "Date": "Tue, 18 Dec 2018 22:33:39 GMT",
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": "771",
-        "Connection": "keep-alive",
-        "X-RateLimit-Limit": "300",
-        "X-RateLimit-Remaining": "298",
-        "X-RateLimit-Reset": "1545172420",
-        "X-Powered-By": "Profit",
-        "ETag": "W/\"303-I8/NbXwf3nHCoyJz6XeCqkqx8sY\"",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+        "date": "Tue, 18 Dec 2018 22:33:39 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "771",
+        "connection": "keep-alive",
+        "x-ratelimit-limit": "300",
+        "x-ratelimit-remaining": "298",
+        "x-ratelimit-reset": "1545172420",
+        "x-powered-by": "Profit",
+        "etag": "W/\"303-I8/NbXwf3nHCoyJz6XeCqkqx8sY\"",
+        "strict-transport-security": "max-age=31536000; includeSubDomains"
       },
       "status_code": 200,
       "type": "ok"
