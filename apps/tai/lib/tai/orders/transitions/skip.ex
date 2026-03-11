@@ -15,11 +15,13 @@ defmodule Tai.Orders.Transitions.Skip do
   embedded_schema do
   end
 
+  @spec changeset(t, map) :: Ecto.Changeset.t()
   def changeset(transition, params) do
     transition
     |> cast(params, [])
   end
 
+  @spec from :: [atom]
   def from, do: ~w[enqueued]a
 
   def attrs(_) do
@@ -28,6 +30,7 @@ defmodule Tai.Orders.Transitions.Skip do
     ]
   end
 
+  @spec status(atom) :: atom
   def status(_current) do
     :skipped
   end

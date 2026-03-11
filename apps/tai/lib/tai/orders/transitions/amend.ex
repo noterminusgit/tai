@@ -19,14 +19,17 @@ defmodule Tai.Orders.Transitions.Amend do
     field(:last_venue_timestamp, :utc_datetime_usec)
   end
 
+  @spec changeset(t, map) :: Ecto.Changeset.t()
   def changeset(transition, params) do
     transition
     |> cast(params, [:price, :leaves_qty, :last_received_at, :last_venue_timestamp])
     |> validate_required([:price, :leaves_qty, :last_received_at])
   end
 
+  @spec from :: [atom]
   def from, do: ~w[pending_amend amend_accepted]a
 
+  @spec attrs(t) :: keyword
   def attrs(transition) do
     [
       price: transition.price,
@@ -36,6 +39,7 @@ defmodule Tai.Orders.Transitions.Amend do
     ]
   end
 
+  @spec status(atom) :: atom
   def status(_current) do
     :open
   end

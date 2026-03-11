@@ -11,11 +11,13 @@ defmodule Tai.Markets.Asset do
   @enforce_keys ~w(val symbol)a
   defstruct ~w(val symbol)a
 
+  @spec new(term, symbol) :: t
   def new(val, symbol) do
     asset_val = val |> Tai.Utils.Decimal.cast!()
     %Asset{val: asset_val, symbol: symbol}
   end
 
+  @spec add(t, t) :: t
   def add(%Asset{} = a, %Asset{} = b) do
     if a.symbol === b.symbol do
       new_val = Decimal.add(a.val, b.val)
@@ -25,6 +27,7 @@ defmodule Tai.Markets.Asset do
     end
   end
 
+  @spec sub(t, t) :: t
   def sub(%Asset{} = a, %Asset{} = b) do
     if a.symbol === b.symbol do
       new_val = Decimal.sub(a.val, b.val)
@@ -36,6 +39,7 @@ defmodule Tai.Markets.Asset do
   end
 
   @zero Decimal.new(0)
+  @spec zero?(t) :: boolean
   def zero?(%Asset{val: val}), do: val |> Decimal.compare(@zero) == :eq
 end
 

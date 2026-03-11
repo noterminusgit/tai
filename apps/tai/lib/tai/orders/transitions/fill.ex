@@ -19,16 +19,19 @@ defmodule Tai.Orders.Transitions.Fill do
     field(:last_venue_timestamp, :utc_datetime_usec)
   end
 
+  @spec changeset(t, map) :: Ecto.Changeset.t()
   def changeset(transition, params) do
     transition
     |> cast(params, [:venue_order_id, :cumulative_qty, :last_received_at, :last_venue_timestamp])
     |> validate_required([:cumulative_qty, :last_received_at])
   end
 
+  @spec from :: [atom]
   def from do
     ~w[enqueued create_accepted open pending_cancel cancel_accepted pending_amend amend_accepted]a
   end
 
+  @spec attrs(t) :: keyword
   def attrs(transition) do
     [
       venue_order_id: transition.venue_order_id,
@@ -39,6 +42,7 @@ defmodule Tai.Orders.Transitions.Fill do
     ]
   end
 
+  @spec status(atom) :: atom
   def status(_current) do
     :filled
   end
