@@ -78,6 +78,34 @@ defmodule Tai.AdvisorTest do
     end
   end
 
+  describe "handle_info for trades" do
+    test "stores trade in state.trades, not state.market_quotes" do
+      trade = %Tai.Markets.Trade{
+        id: "trade-1",
+        venue: :my_venue,
+        product_symbol: :btc_usd,
+        price: Decimal.new("100.0"),
+        qty: Decimal.new("1.0"),
+        side: "buy",
+        liquidation: false,
+        received_at: System.monotonic_time(),
+        venue_timestamp: nil
+      }
+
+      advisor_pid = start!(NoOpAdvisor, :trade_store, :my_advisor, [])
+
+      send(advisor_pid, trade)
+      Process.sleep(50)
+
+      state = :sys.get_state(advisor_pid)
+
+      assert state.trades.data[{:my_venue, :btc_usd}] == trade
+      assert state.market_quotes.data == %{}
+
+      Process.exit(advisor_pid, :kill)
+    end
+  end
+
   defp start!(advisor, fleet_id, advisor_id, opts) do
     market_stream_keys = Keyword.get(opts, :market_stream_keys, [])
     config = Keyword.get(opts, :config, %{})
