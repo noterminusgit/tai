@@ -100,8 +100,8 @@ defmodule Tai.Advisor do
       @impl true
       def handle_info(%Markets.Trade{} = trade, state) do
         key = {trade.venue, trade.product_symbol}
-        new_data = Map.put(state.market_quotes.data, key, trade)
-        new_trades = Map.put(state.market_quotes, :data, new_data)
+        new_data = Map.put(state.trades.data, key, trade)
+        new_trades = Map.put(state.trades, :data, new_data)
         new_state = %{state | trades: new_trades}
 
         {

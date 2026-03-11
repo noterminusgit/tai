@@ -28,6 +28,12 @@ config :tai, order_workers: 5
 # [default: 2] [optional] Maximum number of workers created if pool is empty
 config :tai, order_workers_max_overflow: 2
 
+# [default: 5] [optional] Number of workers for processing order state transitions
+config :tai, order_transition_workers: 5
+
+# [default: TaiEvents] [optional] Module used for structured event logging
+config :tai, logger: TaiEvents
+
 # [default: false] [optional] Flag which enables the sending of orders to the venue. When this is `false`, it
 # acts a safety net by enqueueing and skipping the order transmission to the venue. This is useful in
 # development to prevent accidently sending live orders.
