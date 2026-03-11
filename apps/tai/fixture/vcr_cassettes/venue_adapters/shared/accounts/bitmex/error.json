@@ -3,7 +3,7 @@
     "request": {
       "body": "{}",
       "headers": {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
         "api-nonce": "***",
         "api-key": "***",
         "api-signature": "***"
@@ -17,13 +17,13 @@
       "binary": false,
       "body": "{\"error\":{\"message\":\"Invalid API Key.\",\"name\":\"HTTPError\"}}",
       "headers": {
-        "Date": "Mon, 09 Mar 2020 01:13:01 GMT",
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": "59",
-        "Connection": "keep-alive",
-        "Set-Cookie": "AWSALBTG=Q5SYkajXrHF3yLyQ7q9rOVnVPtZx0uZr83JdJ2MYVzD8c1ofLGCvYP1W3GB8MOMYl0PKyepiDrEkohOstC14GeiBV2zcIh0y9eLQsQBYY9yZuPBZzge6QnuAQ9KL22EbrTwUNI6UAxgxis0V1b68YCjLJVWNhnm12grV781dQCb5CvTWR2g=; Expires=Mon, 16 Mar 2020 01:13:01 GMT; Path=/",
-        "ETag": "W/\"3b-F9lqm+nT/Pnea1w3g00vYiwMxf0\"",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+        "date": "Mon, 09 Mar 2020 01:13:01 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "59",
+        "connection": "keep-alive",
+        "set-cookie": "AWSALBTG=Q5SYkajXrHF3yLyQ7q9rOVnVPtZx0uZr83JdJ2MYVzD8c1ofLGCvYP1W3GB8MOMYl0PKyepiDrEkohOstC14GeiBV2zcIh0y9eLQsQBYY9yZuPBZzge6QnuAQ9KL22EbrTwUNI6UAxgxis0V1b68YCjLJVWNhnm12grV781dQCb5CvTWR2g=; Expires=Mon, 16 Mar 2020 01:13:01 GMT; Path=/",
+        "etag": "W/\"3b-F9lqm+nT/Pnea1w3g00vYiwMxf0\"",
+        "strict-transport-security": "max-age=31536000; includeSubDomains"
       },
       "status_code": 401,
       "type": "ok"

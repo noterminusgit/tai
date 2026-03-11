@@ -42,8 +42,13 @@ defmodule Tai.VenueAdapters.Deribit.StreamSupervisor do
     |> Supervisor.init(strategy: :one_for_one)
   end
 
-  # TODO: Make this configurable
-  defp endpoint, do: "wss://#{ExDeribit.HTTPClient.domain()}/ws#{ExDeribit.HTTPClient.api_path()}"
+  @default_domain "www.deribit.com"
+  @default_api_path "/api/v2"
+  defp endpoint do
+    domain = Application.get_env(:ex_deribit, :domain, @default_domain)
+    api_path = Application.get_env(:ex_deribit, :api_path, @default_api_path)
+    "wss://#{domain}/ws#{api_path}"
+  end
 
   defp build_order_book_children(market_streams, quote_depth, broadcast_change_set) do
     market_streams

@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.AmendBulkOrders do
+  alias Tai.VenueAdapters.Bitmex.HTTPClient
   alias Tai.Orders.Responses
 
   @type credentials :: Tai.Venues.Adapter.credentials()
@@ -21,9 +22,9 @@ defmodule Tai.VenueAdapters.Bitmex.AmendBulkOrders do
     |> parse_response()
   end
 
-  defdelegate send_to_venue(credentials, params),
-    to: ExBitmex.Rest.Orders,
-    as: :amend_bulk
+  defp send_to_venue(credentials, params) do
+    HTTPClient.put("/api/v1/order/bulk", credentials, params)
+  end
 
   defdelegate to_venue_credentials(credentials),
     to: Tai.VenueAdapters.Bitmex.Credentials,
@@ -82,11 +83,11 @@ defmodule Tai.VenueAdapters.Bitmex.AmendBulkOrders do
   defp parse_bulk_responses(venue_orders) do
     venue_orders
     |> Enum.map(fn venue_order ->
-      {:ok, venue_timestamp, 0} = DateTime.from_iso8601(venue_order.timestamp)
+      {:ok, venue_timestamp, 0} = DateTime.from_iso8601(venue_order["timestamp"])
       received_at = Tai.Time.monotonic_time()
 
       %Responses.AmendAccepted{
-        id: venue_order.order_id,
+        id: venue_order["orderID"],
         received_at: received_at,
         venue_timestamp: venue_timestamp
       }

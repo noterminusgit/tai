@@ -1,31 +1,29 @@
 defmodule Tai.VenueAdapters.Binance.CancelOrder do
   alias Tai.Orders.Responses
-  alias ExBinance.Spot.Private
+  alias Tai.VenueAdapters.Binance.Auth
 
   def cancel_order(order, credentials) do
-    venue_credentials = struct!(ExBinance.Credentials, credentials)
+    params = %{
+      "symbol" => order.venue_product_symbol,
+      "orderId" => order.venue_order_id
+    }
 
-    order.venue_product_symbol
-    |> send_to_venue(order.venue_order_id, venue_credentials)
+    Auth.signed_request(:delete, "/api/v3/order", credentials, params)
     |> parse_response()
   end
 
-  defdelegate send_to_venue(venue_symbol, order_id, credentials),
-    to: ExBinance.Spot.Private,
-    as: :cancel_order_by_order_id
-
-  defp parse_response({:ok, %Private.Responses.CancelOrderResponse{} = venue_response}) do
+  defp parse_response({:ok, %Req.Response{status: 200, body: body}}) do
     received_at = Tai.Time.monotonic_time()
 
     response = %Responses.CancelAccepted{
-      id: venue_response.order_id,
+      id: body["orderId"],
       received_at: received_at
     }
 
     {:ok, response}
   end
 
-  defp parse_response({:error, {:not_found, _}}) do
+  defp parse_response({:ok, %Req.Response{body: %{"code" => -2011}}}) do
     {:error, :not_found}
   end
 

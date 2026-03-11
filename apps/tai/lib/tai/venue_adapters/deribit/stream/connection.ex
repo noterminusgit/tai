@@ -1,6 +1,14 @@
 defmodule Tai.VenueAdapters.Deribit.Stream.Connection do
-  use WebSockex
+  @behaviour Fresh
   alias Tai.VenueAdapters.Deribit.Stream
+
+  def child_spec(opts) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [opts]},
+      restart: :transient
+    }
+  end
 
   defmodule State do
     @type product :: Tai.Venues.Product.t()
@@ -83,32 +91,48 @@ defmodule Tai.VenueAdapters.Deribit.Stream.Connection do
     }
 
     name = to_name(stream.venue.id)
-    headers = []
-    WebSockex.start_link(endpoint, __MODULE__, state, name: name, extra_headers: headers)
+    Fresh.start_link(endpoint, __MODULE__, state, name: {:local, name})
   end
 
   @spec to_name(venue_id) :: atom
   def to_name(venue), do: :"#{__MODULE__}_#{venue}"
 
-  def handle_connect(_conn, state) do
+  @impl Fresh
+  def handle_connect(_status, _headers, state) do
     TaiEvents.info(%Tai.Events.StreamConnect{venue: state.venue})
     send(self(), :init_subscriptions)
     {:ok, state}
   end
 
-  def handle_disconnect(conn_status, state) do
+  @impl Fresh
+  def handle_disconnect(_code, reason, state) do
     TaiEvents.warning(%Tai.Events.StreamDisconnect{
       venue: state.venue,
-      reason: conn_status.reason
+      reason: reason
     })
 
-    {:ok, state}
+    :reconnect
   end
 
-  def terminate(close_reason, state) do
+  @impl Fresh
+  def handle_terminate(close_reason, state) do
     TaiEvents.warning(%Tai.Events.StreamTerminate{venue: state.venue, reason: close_reason})
   end
 
+  @impl Fresh
+  def handle_in({:text, msg}, state) do
+    case Jason.decode(msg) do
+      {:ok, decoded} -> handle_msg(decoded, state)
+      {:error, _} -> {:ok, state}
+    end
+  end
+
+  def handle_in(_frame, state), do: {:ok, state}
+
+  @impl Fresh
+  def handle_control(_frame, state), do: {:ok, state}
+
+  @impl Fresh
   def handle_info(:init_subscriptions, state) do
     send(self(), {:subscribe, :heartbeat})
     send(self(), {:subscribe, :depth})
@@ -117,6 +141,7 @@ defmodule Tai.VenueAdapters.Deribit.Stream.Connection do
   end
 
   @heartbeat_interval_s 10
+  @impl Fresh
   def handle_info({:subscribe, :heartbeat}, state) do
     msg =
       %{
@@ -136,6 +161,7 @@ defmodule Tai.VenueAdapters.Deribit.Stream.Connection do
     {:reply, {:text, msg}, state}
   end
 
+  @impl Fresh
   def handle_info({:subscribe, :depth}, state) do
     channels = state.markets |> Enum.map(&"book.#{&1.venue_symbol}.none.20.100ms")
 
@@ -154,12 +180,16 @@ defmodule Tai.VenueAdapters.Deribit.Stream.Connection do
     {:reply, {:text, msg}, state}
   end
 
+  @impl Fresh
   def handle_info({:subscribe, :authenticate}, state) do
     data = ""
-    timestamp = ExDeribit.Auth.timestamp()
-    nonce = ExDeribit.Auth.nonce()
+    timestamp = :os.system_time(:millisecond)
+    nonce = :crypto.strong_rand_bytes(16) |> Base.encode16(case: :lower)
     {_, credential} = state.credential
-    signature = ExDeribit.Auth.sign(credential.client_secret, timestamp, nonce, data)
+
+    signature =
+      :crypto.mac(:hmac, :sha256, credential.client_secret, "#{timestamp}\n#{nonce}\n#{data}")
+      |> Base.encode16(case: :lower)
 
     msg =
       %{
@@ -181,13 +211,10 @@ defmodule Tai.VenueAdapters.Deribit.Stream.Connection do
     {:reply, {:text, msg}, state}
   end
 
-  def handle_frame({:text, msg}, state) do
-    msg
-    |> Jason.decode!()
-    |> handle_msg(state)
-  end
+  def handle_info(_msg, state), do: {:ok, state}
 
-  def handle_frame(_frame, state), do: {:ok, state}
+  @impl Fresh
+  def handle_error(_error, _state), do: :reconnect
 
   defp handle_msg(
          %{"id" => id, "result" => %{"access_token" => access_token}},
@@ -241,7 +268,7 @@ defmodule Tai.VenueAdapters.Deribit.Stream.Connection do
     state = Map.put(state, :last_heartbeat, now)
 
     if diff > @heartbeat_interval_timeout_ms do
-      {:close, {1000, "heartbeat timeout"}, state}
+      {:close, 1000, "heartbeat timeout", state}
     else
       {:ok, state}
     end

@@ -6,7 +6,7 @@ defmodule Tai.IEx.Commands.FleetsTest do
     mock_fleet_config(%{id: :log_spread, market_streams: "venue_a.btc_usd"})
     mock_fleet_config(%{id: :trade_spread, market_streams: "venue_b.eth_usd"})
 
-    assert capture_io(&Tai.IEx.fleets/0) == """
+    assert capture_io(fn -> Tai.IEx.fleets(order: [:id]) end) == """
            +--------------+---------------+-----------------+---------------------------------------------+----------------------------+
            |           ID | Start on Boot |  Market Streams |                                     Factory |                    Advisor |
            +--------------+---------------+-----------------+---------------------------------------------+----------------------------+

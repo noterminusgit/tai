@@ -1,0 +1,37 @@
+[
+  {
+    "request": {
+      "body": "nonce=1773253483816&ordertype=limit&pair=XBTUSD&price=25000.5&timeInForce=IOC&type=buy&volume=0.0001",
+      "headers": {
+        "api-key": "***",
+        "api-sign": "***",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "method": "post",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.kraken.com/0/private/AddOrder"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"error\":[\"EAPI:Invalid key\"]}",
+      "headers": {
+        "date": "Wed, 11 Mar 2026 18:24:43 GMT",
+        "content-type": "application/json",
+        "content-length": "30",
+        "connection": "keep-alive",
+        "cache-control": "no-store",
+        "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+        "x-trace-id": "0ab2b853019cde24dd740001bc023118",
+        "ko0rxy0rwwiy-pad": "$aW&MYKLVnxtp4npVIYYSIz-cIe6qdua",
+        "x-proxy": "gateway",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "cf-cache-status": "DYNAMIC",
+        "x-content-type-options": "nosniff",
+        "server": "cloudflare"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  }
+]

@@ -1,33 +1,39 @@
 defmodule Tai.VenueAdapters.Bybit.Product do
-  alias ExBybit.Derivatives
-
-  def build(%Derivatives.Symbol{} = symbol, venue_id) do
-    type = symbol.name |> to_type()
+  def build(symbol, venue_id) do
+    name = symbol["symbol"]
+    type = name |> to_type()
     expiry = symbol |> to_expiry(type)
+    base_currency = symbol["baseCoin"]
+    quote_currency = symbol["quoteCoin"]
+    status = symbol["status"]
+    symbol_alias = symbol["alias"]
+
+    price_filter = symbol["priceFilter"] || %{}
+    lot_size_filter = symbol["lotSizeFilter"] || %{}
 
     %Tai.Venues.Product{
       venue_id: venue_id,
-      symbol: symbol.name |> downcase_and_atom(),
-      venue_symbol: symbol.name,
-      alias: symbol.alias,
-      base: symbol.base_currency |> downcase_and_atom(),
-      quote: symbol.quote_currency |> downcase_and_atom(),
-      venue_base: symbol.base_currency,
-      venue_quote: symbol.quote_currency,
-      status: symbol.status |> to_status(),
+      symbol: name |> downcase_and_atom(),
+      venue_symbol: name,
+      alias: symbol_alias,
+      base: base_currency |> downcase_and_atom(),
+      quote: quote_currency |> downcase_and_atom(),
+      venue_base: base_currency,
+      venue_quote: quote_currency,
+      status: status |> to_status(),
       type: type,
       expiry: expiry,
       collateral: false,
-      price_increment: Decimal.new(symbol.price_filter.tick_size),
-      size_increment: Tai.Utils.Decimal.cast!(symbol.lot_size_filter.qty_step),
-      min_price: Decimal.new(symbol.price_filter.min_price),
-      min_size: Tai.Utils.Decimal.cast!(symbol.lot_size_filter.min_trading_qty),
-      max_price: Decimal.new(symbol.price_filter.max_price),
-      max_size: Decimal.new(symbol.lot_size_filter.max_trading_qty),
-      value: Tai.Utils.Decimal.cast!(symbol.lot_size_filter.qty_step),
+      price_increment: Decimal.new(price_filter["tickSize"] || "0"),
+      size_increment: Tai.Utils.Decimal.cast!(lot_size_filter["qtyStep"] || "0"),
+      min_price: Decimal.new(price_filter["minPrice"] || "0"),
+      min_size: Tai.Utils.Decimal.cast!(lot_size_filter["minOrderQty"] || "0"),
+      max_price: Decimal.new(price_filter["maxPrice"] || "0"),
+      max_size: Decimal.new(lot_size_filter["maxOrderQty"] || "0"),
+      value: Tai.Utils.Decimal.cast!(lot_size_filter["qtyStep"] || "0"),
       value_side: :quote,
       is_quanto: false,
-      is_inverse: to_is_inverse(symbol, type)
+      is_inverse: to_is_inverse(quote_currency, type)
     }
   end
 
@@ -47,11 +53,14 @@ defmodule Tai.VenueAdapters.Bybit.Product do
   @expiry_month_and_day ~r/.+(?<month>\d{2,2})(?<day>\d{2,2})$/
   @expiry_time Time.new!(8, 0, 0, 0)
   defp to_expiry(symbol, type) do
+    name = symbol["symbol"]
+    symbol_alias = symbol["alias"]
+
     case type do
       :future ->
-        %{"year" => year_str} = Regex.named_captures(@expiry_year, symbol.name)
-        %{"month" => month_str, "day" => day_str} = Regex.named_captures(@expiry_month_and_day, symbol.alias)
-        {year, _} = "20#{year_str}" |> Integer.parse() # TODO: This is only going to work until 2099
+        %{"year" => year_str} = Regex.named_captures(@expiry_year, name)
+        %{"month" => month_str, "day" => day_str} = Regex.named_captures(@expiry_month_and_day, symbol_alias || name)
+        {year, _} = "20#{year_str}" |> Integer.parse()
         {month, _} = month_str |> Integer.parse()
         {day, _} = day_str |> Integer.parse()
         date = Date.new!(year, month, day)
@@ -62,7 +71,7 @@ defmodule Tai.VenueAdapters.Bybit.Product do
     end
   end
 
-  defp to_is_inverse(_symbol, :future), do: true
-  defp to_is_inverse(%_{quote_currency: "USD"}, :swap),  do: true
-  defp to_is_inverse(_, :swap),  do: false
+  defp to_is_inverse(_quote_currency, :future), do: true
+  defp to_is_inverse("USD", :swap), do: true
+  defp to_is_inverse(_, :swap), do: false
 end

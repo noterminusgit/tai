@@ -1,15 +1,20 @@
 defmodule Tai.VenueAdapters.Binance.Products do
+  @exchange_info_url "https://api.binance.com/api/v3/exchangeInfo"
+
   def products(venue_id) do
-    with {:ok, %ExBinance.ExchangeInfo{symbols: venue_products}} <-
-           ExBinance.Spot.Public.exchange_info() do
+    with {:ok, %Req.Response{status: 200, body: %{"symbols" => venue_products}}} <-
+           Req.get(@exchange_info_url) do
       products = Enum.map(venue_products, &build(&1, venue_id))
       {:ok, products}
     else
-      {:error, {:binance_error, %{"code" => -2014, "msg" => "API-key format invalid." = reason}}} ->
+      {:ok, %Req.Response{body: %{"code" => -2014, "msg" => "API-key format invalid." = reason}}} ->
         {:error, {:credentials, reason}}
 
-      {:error, {:http_error, %HTTPoison.Error{reason: "timeout"}}} ->
+      {:error, %Req.TransportError{reason: :timeout}} ->
         {:error, :timeout}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 

@@ -38,7 +38,7 @@ defmodule Tai.EventsLoggerTest do
     assert capture_log(fn ->
              send(logger, {TaiEvents.Event, @event, :info})
              :timer.sleep(100)
-           end) =~ "[info]  {\"data\":{\"hello\":\"custom\"},\"type\":\"Support.CustomEvent\"}"
+           end) =~ "{\"data\":{\"hello\":\"custom\"},\"type\":\"Support.CustomEvent\"}"
   end
 
   test "logs debug events" do
@@ -64,6 +64,6 @@ defmodule Tai.EventsLoggerTest do
     assert capture_log(fn ->
              send(logger, {TaiEvents.Event, @event, :info})
              :timer.sleep(100)
-           end) =~ "[info]  message from custom logger"
+           end) =~ "message from custom logger"
   end
 end

@@ -1,6 +1,6 @@
 defmodule Tai.Venues.Adapters.ProductsTest do
   use ExUnit.Case, async: false
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Finch
 
   setup_all do
     on_exit(fn ->
@@ -10,7 +10,7 @@ defmodule Tai.Venues.Adapters.ProductsTest do
 
     {:ok, _} = Application.ensure_all_started(:tai)
     start_supervised!(Tai.TestSupport.Mocks.Server)
-    HTTPoison.start()
+    :ok
   end
 
   @test_venues Tai.TestSupport.Helpers.test_venue_adapters_products()

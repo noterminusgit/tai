@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.CancelOrder do
+  alias Tai.VenueAdapters.Bitmex.HTTPClient
   alias Tai.Orders.Responses
 
   @type order :: Tai.Orders.Order.t()
@@ -22,16 +23,16 @@ defmodule Tai.VenueAdapters.Bitmex.CancelOrder do
     to: Tai.VenueAdapters.Bitmex.Credentials,
     as: :from
 
-  defdelegate send_to_venue(credentials, params),
-    to: ExBitmex.Rest.Orders,
-    as: :cancel
+  defp send_to_venue(credentials, params) do
+    HTTPClient.delete("/api/v1/order", credentials, params)
+  end
 
-  defp parse_response({:ok, [venue_order | _], %ExBitmex.RateLimit{}}) do
+  defp parse_response({:ok, [venue_order | _], _rate_limit}) do
     received_at = Tai.Time.monotonic_time()
-    {:ok, venue_timestamp, 0} = DateTime.from_iso8601(venue_order.timestamp)
+    {:ok, venue_timestamp, 0} = DateTime.from_iso8601(venue_order["timestamp"])
 
     response = %Responses.CancelAccepted{
-      id: venue_order.order_id,
+      id: venue_order["orderID"],
       received_at: received_at,
       venue_timestamp: venue_timestamp
     }

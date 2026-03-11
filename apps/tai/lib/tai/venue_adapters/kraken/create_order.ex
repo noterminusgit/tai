@@ -13,7 +13,7 @@ defmodule Tai.VenueAdapters.Kraken.CreateOrder do
       {:ok, %{"error" => [], "result" => result}} ->
         parse_create_response(result, order)
 
-      {:ok, %{"error" => errors}} when length(errors) > 0 ->
+      {:ok, %{"error" => errors}} when errors != [] ->
         parse_error(errors)
 
       {:error, reason} ->
@@ -56,7 +56,7 @@ defmodule Tai.VenueAdapters.Kraken.CreateOrder do
     {:ok, response}
   end
 
-  defp parse_create_response(_, order) do
+  defp parse_create_response(_, _order) do
     {:error, :unknown_response}
   end
 
@@ -82,35 +82,46 @@ defmodule Tai.VenueAdapters.Kraken.CreateOrder do
     body = URI.encode_query(params_with_nonce)
     api_path = URI.parse(endpoint).path
 
-    signature = generate_signature(api_path, nonce, body, credentials.api_secret)
+    case generate_signature(api_path, nonce, body, credentials.api_secret) do
+      {:ok, signature} ->
+        headers = [
+          {"API-Key", credentials.api_key},
+          {"API-Sign", signature},
+          {"Content-Type", "application/x-www-form-urlencoded"}
+        ]
 
-    headers = [
-      {"API-Key", credentials.api_key},
-      {"API-Sign", signature},
-      {"Content-Type", "application/x-www-form-urlencoded"}
-    ]
+        case Req.post(endpoint, body: body, headers: headers, decode_body: false) do
+          {:ok, %Req.Response{status: 200, body: response_body}} ->
+            {:ok, decode_body(response_body)}
 
-    case HTTPoison.post(endpoint, body, headers) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: response_body}} ->
-        {:ok, Jason.decode!(response_body)}
+          {:ok, %Req.Response{status: status_code}} ->
+            {:error, {:http_error, status_code}}
 
-      {:ok, %HTTPoison.Response{status_code: status_code}} ->
-        {:error, {:http_error, status_code}}
+          {:error, %Mint.TransportError{reason: reason}} ->
+            {:error, reason}
+        end
 
-      {:error, %HTTPoison.Error{reason: reason}} ->
-        {:error, reason}
+      {:error, _} = error ->
+        error
     end
   end
 
   defp generate_signature(api_path, nonce, body, api_secret) do
-    decoded_secret = Base.decode64!(api_secret)
+    case Base.decode64(api_secret) do
+      {:ok, decoded_secret} ->
+        nonce_post = nonce <> body
+        sha256_hash = :crypto.hash(:sha256, nonce_post)
 
-    nonce_post = nonce <> body
-    sha256_hash = :crypto.hash(:sha256, nonce_post)
+        message = api_path <> sha256_hash
+        hmac = :crypto.mac(:hmac, :sha512, decoded_secret, message)
 
-    message = api_path <> sha256_hash
-    hmac = :crypto.mac(:hmac, :sha512, decoded_secret, message)
+        {:ok, Base.encode64(hmac)}
 
-    Base.encode64(hmac)
+      :error ->
+        {:error, :invalid_api_secret}
+    end
   end
+
+  defp decode_body(body) when is_map(body), do: body
+  defp decode_body(body) when is_binary(body), do: Jason.decode!(body)
 end

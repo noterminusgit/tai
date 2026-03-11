@@ -1,9 +1,9 @@
 defmodule Tai.Venues.Adapters.CreateOrderCloseTest do
   use Tai.TestSupport.DataCase, async: false
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Finch
 
   setup_all do
-    HTTPoison.start()
+    :ok
   end
 
   @sides [:buy, :sell]

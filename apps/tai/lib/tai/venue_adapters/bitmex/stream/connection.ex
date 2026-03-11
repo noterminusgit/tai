@@ -33,7 +33,7 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.Connection do
 
     name = process_name(stream.venue.id)
     headers = auth_headers(state.credential)
-    WebSockex.start_link(endpoint, __MODULE__, state, name: name, extra_headers: headers)
+    Fresh.start_link(endpoint, __MODULE__, state, name: {:local, name}, headers: headers)
   end
 
   @optional_channels [
@@ -45,7 +45,7 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.Connection do
     :insurance,
     :settlement
   ]
-  @impl true
+  @impl Tai.Venues.Streams.ConnectionAdapter
   def subscribe(:init, state) do
     if state.credential do
       send(self(), {:subscribe, :login})
@@ -73,7 +73,6 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.Connection do
     {:ok, state}
   end
 
-  @impl true
   def subscribe(:login, state) do
     msg = %{"op" => "subscribe", "args" => ["order"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
@@ -81,7 +80,6 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.Connection do
 
   # Bitmex has an unpublished limit to websocket message lengths.
   @order_books_chunk_count 10
-  @impl true
   def subscribe(:depth, state) do
     # > 25 quotes are experimental. It has performance issues causing message queue back pressure
     order_book_table = if state.quote_depth <= 25, do: "orderBookL2_25", else: "orderBookL2"
@@ -97,7 +95,6 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.Connection do
     {:ok, state}
   end
 
-  @impl true
   def subscribe(:trades, state) do
     state.markets
     |> Enum.chunk_every(@order_books_chunk_count)
@@ -110,56 +107,46 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.Connection do
     {:ok, state}
   end
 
-  @impl true
   def subscribe(:positions, state) do
     msg = %{"op" => "subscribe", "args" => ["position"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
   end
 
-  @impl true
   def subscribe(:margin, state) do
     msg = %{"op" => "subscribe", "args" => ["margin"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
   end
 
-  @impl true
   def subscribe(:connected_stats, state) do
     msg = %{"op" => "subscribe", "args" => ["connected"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
   end
 
-  @impl true
   def subscribe(:liquidations, state) do
     msg = %{"op" => "subscribe", "args" => ["liquidation"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
   end
 
-  @impl true
   def subscribe(:notifications, state) do
     msg = %{"op" => "subscribe", "args" => ["publicNotifications"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
   end
 
-  @impl true
   def subscribe(:funding, state) do
     msg = %{"op" => "subscribe", "args" => ["funding"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
   end
 
-  @impl true
   def subscribe(:insurance, state) do
     msg = %{"op" => "subscribe", "args" => ["insurance"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
   end
 
-  @impl true
   def subscribe(:settlement, state) do
     msg = %{"op" => "subscribe", "args" => ["settlement"]} |> Jason.encode!()
     {:reply, {:text, msg}, state}
   end
 
-  # TODO: Figure out how to move this
-  @impl true
   def handle_info(
         :ping_autocancel,
         %{
@@ -175,10 +162,9 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.Connection do
     {:reply, {:text, msg}, state}
   end
 
-  @impl true
   def handle_info(:ping_autocancel, state), do: {:ok, state}
 
-  @impl true
+  @impl Tai.Venues.Streams.ConnectionAdapter
   def on_msg(%{"limit" => %{"remaining" => remaining}, "version" => _}, _received_at, state) do
     TaiEvents.info(%Tai.Events.BitmexStreamConnectionLimitDetails{
       venue_id: state.venue,
@@ -187,40 +173,41 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.Connection do
     {:ok, state}
   end
 
-  @impl true
   def on_msg(%{"request" => _, "subscribe" => _} = msg, received_at, state) do
     msg |> forward(:markets, received_at, state)
     {:ok, state}
   end
 
   @order_book_tables ~w(orderBookL2 orderBookL2_25)
-  @impl true
   def on_msg(%{"table" => table} = msg, received_at, state) when table in @order_book_tables do
     msg |> forward(:markets, received_at, state)
     {:ok, state}
   end
 
   @auth_tables ~w(position wallet margin order execution transact)
-  @impl true
   def on_msg(%{"table" => table} = msg, received_at, state) when table in @auth_tables do
     msg |> forward(:auth, received_at, state)
     {:ok, state}
   end
 
-  @impl true
   def on_msg(msg, received_at, state) do
     msg |> forward(:optional_channels, received_at, state)
     {:ok, state}
   end
 
   defp auth_headers({_credential_id, %{api_key: api_key, api_secret: api_secret}}) do
-    nonce = ExBitmex.Auth.nonce()
-    api_signature = ExBitmex.Auth.sign(api_secret, "GET", "/realtime", nonce, "")
+    nonce = :os.system_time(:second) + 60
+
+    data = "GET/realtime#{nonce}"
+
+    api_signature =
+      :crypto.mac(:hmac, :sha256, api_secret, data)
+      |> Base.encode16(case: :lower)
 
     [
-      "api-key": api_key,
-      "api-signature": api_signature,
-      "api-expires": nonce
+      {"api-key", api_key},
+      {"api-signature", api_signature},
+      {"api-expires", "#{nonce}"}
     ]
   end
 

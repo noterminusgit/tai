@@ -3,26 +3,26 @@ defmodule Tai.VenueAdapters.Binance.CreateOrder do
   Create orders for the Binance adapter
   """
 
-  alias ExBinance.Spot.Private
+  alias Tai.VenueAdapters.Binance.Auth
 
   @limit "LIMIT"
 
   def create_order(%Tai.Orders.Order{side: side, type: :limit} = order, credentials) do
     venue_time_in_force = order.time_in_force |> to_venue_time_in_force
     venue_side = side |> Atom.to_string() |> String.upcase()
-    credentials = struct!(ExBinance.Credentials, credentials)
 
-    %Private.Requests.CreateOrderRequest{
-      new_client_order_id: order.client_id,
-      symbol: order.venue_product_symbol,
-      side: venue_side,
-      type: @limit,
-      quantity: order.qty,
-      quote_order_qty: order.qty,
-      price: order.price,
-      time_in_force: venue_time_in_force
+    params = %{
+      "newClientOrderId" => order.client_id,
+      "symbol" => order.venue_product_symbol,
+      "side" => venue_side,
+      "type" => @limit,
+      "quantity" => to_string(order.qty),
+      "quoteOrderQty" => to_string(order.qty),
+      "price" => to_string(order.price),
+      "timeInForce" => venue_time_in_force
     }
-    |> Private.create_order(credentials)
+
+    Auth.signed_request(:post, "/api/v3/order", credentials, params)
     |> parse_response(order)
   end
 
@@ -30,16 +30,13 @@ defmodule Tai.VenueAdapters.Binance.CreateOrder do
   defp to_venue_time_in_force(:fok), do: "FOK"
   defp to_venue_time_in_force(:ioc), do: "IOC"
 
-  defp parse_response(
-         {:ok, %Private.Responses.CreateOrderResponse{} = binance_response},
-         _
-       ) do
+  defp parse_response({:ok, %Req.Response{status: 200, body: body}}, _) do
     received_at = Tai.Time.monotonic_time()
 
     venue_timestamp =
-      binance_response.transact_time |> DateTime.from_unix!(:millisecond)
+      body["transactTime"] |> DateTime.from_unix!(:millisecond)
 
-    venue_order_id = binance_response.order_id |> Integer.to_string()
+    venue_order_id = body["orderId"] |> Integer.to_string()
 
     response = %Tai.Orders.Responses.CreateAccepted{
       id: venue_order_id,
@@ -50,16 +47,23 @@ defmodule Tai.VenueAdapters.Binance.CreateOrder do
     {:ok, response}
   end
 
-  defp parse_response({:error, :timeout} = error, _) do
-    error
+  defp parse_response({:error, %Req.TransportError{reason: :timeout}}, _) do
+    {:error, :timeout}
   end
 
-  defp parse_response({:error, :connect_timeout} = error, _) do
-    error
+  defp parse_response({:error, %Req.TransportError{reason: :connect_timeout}}, _) do
+    {:error, :connect_timeout}
   end
 
-  defp parse_response({:error, {:new_order_rejected, "Account has insufficient balance" <> _}}, _) do
+  defp parse_response(
+         {:ok, %Req.Response{body: %{"code" => _code, "msg" => "Account has insufficient balance" <> _ = _msg}}},
+         _
+       ) do
     {:error, :insufficient_balance}
+  end
+
+  defp parse_response({:ok, %Req.Response{body: %{"code" => _code, "msg" => msg}}}, _) do
+    {:error, {:unhandled, msg}}
   end
 
   defp parse_response({:error, reason}, _) do

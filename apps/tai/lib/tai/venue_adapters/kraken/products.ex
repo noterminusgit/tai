@@ -6,16 +6,16 @@ defmodule Tai.VenueAdapters.Kraken.Products do
   def products(venue_id) do
     endpoint = "https://api.kraken.com/0/public/AssetPairs"
 
-    case HTTPoison.get(endpoint) do
-      {:ok, %HTTPoison.Response{status_code: 200, body: body}} ->
+    case Req.get(endpoint) do
+      {:ok, %Req.Response{status: 200, body: body}} ->
         body
-        |> Jason.decode!()
+        |> decode_body()
         |> parse_products(venue_id)
 
-      {:ok, %HTTPoison.Response{status_code: status_code}} ->
+      {:ok, %Req.Response{status: status_code}} ->
         {:error, {:http_error, status_code}}
 
-      {:error, %HTTPoison.Error{reason: reason}} ->
+      {:error, %Mint.TransportError{reason: reason}} ->
         {:error, reason}
     end
   end
@@ -35,7 +35,7 @@ defmodule Tai.VenueAdapters.Kraken.Products do
     {:ok, products}
   end
 
-  defp parse_products(%{"error" => errors}, _venue_id) when length(errors) > 0 do
+  defp parse_products(%{"error" => errors}, _venue_id) when errors != [] do
     {:error, {:kraken_error, errors}}
   end
 
@@ -100,4 +100,7 @@ defmodule Tai.VenueAdapters.Kraken.Products do
   end
   defp parse_decimal(value, _default) when is_number(value), do: Decimal.new(value)
   defp parse_decimal(_value, default), do: Decimal.new(default)
+
+  defp decode_body(body) when is_map(body), do: body
+  defp decode_body(body) when is_binary(body), do: Jason.decode!(body)
 end

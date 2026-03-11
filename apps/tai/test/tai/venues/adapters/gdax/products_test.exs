@@ -1,11 +1,10 @@
 defmodule Tai.Venues.Adapters.Gdax.ProductsTest do
   use ExUnit.Case, async: false
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Finch
 
   @venue Tai.TestSupport.Helpers.test_venue_adapter(:gdax)
 
   setup_all do
-    HTTPoison.start()
     :ok
   end
 

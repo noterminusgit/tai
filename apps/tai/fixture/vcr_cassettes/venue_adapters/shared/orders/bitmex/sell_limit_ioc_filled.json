@@ -3,7 +3,7 @@
     "request": {
       "body": "{\"ordType\":\"Limit\",\"orderQty\":\"10\",\"price\":\"3785.5\",\"side\":\"Sell\",\"symbol\":\"XBTH19\",\"timeInForce\":\"ImmediateOrCancel\"}",
       "headers": {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
         "api-nonce": "***",
         "api-key": "***",
         "api-signature": "***"
@@ -17,16 +17,16 @@
       "binary": false,
       "body": "{\"orderID\":\"db648902-e896-6c47-33b4-ba0c626b9400\",\"clOrdID\":\"\",\"clOrdLinkID\":\"\",\"account\":158677,\"symbol\":\"XBTH19\",\"side\":\"Sell\",\"simpleOrderQty\":null,\"orderQty\":10,\"price\":3785.5,\"displayQty\":null,\"stopPx\":null,\"pegOffsetValue\":null,\"pegPriceType\":\"\",\"currency\":\"USD\",\"settlCurrency\":\"XBt\",\"ordType\":\"Limit\",\"timeInForce\":\"ImmediateOrCancel\",\"execInst\":\"\",\"contingencyType\":\"\",\"exDestination\":\"XBME\",\"ordStatus\":\"Filled\",\"triggered\":\"\",\"workingIndicator\":false,\"ordRejReason\":\"\",\"simpleLeavesQty\":null,\"leavesQty\":0,\"simpleCumQty\":null,\"cumQty\":10,\"avgPx\":3786,\"multiLegReportingType\":\"SingleSecurity\",\"text\":\"Submitted via API.\",\"transactTime\":\"2018-12-14T03:03:43.097Z\",\"timestamp\":\"2018-12-14T03:03:43.097Z\"}",
       "headers": {
-        "Date": "Fri, 14 Dec 2018 03:03:43 GMT",
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": "712",
-        "Connection": "keep-alive",
-        "X-RateLimit-Limit": "300",
-        "X-RateLimit-Remaining": "298",
-        "X-RateLimit-Reset": "1544756624",
-        "X-Powered-By": "Profit",
-        "ETag": "W/\"2c8-5SFwA1qh6PzSoR9vQ1mSHtrqbP8\"",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+        "date": "Fri, 14 Dec 2018 03:03:43 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "712",
+        "connection": "keep-alive",
+        "x-ratelimit-limit": "300",
+        "x-ratelimit-remaining": "298",
+        "x-ratelimit-reset": "1544756624",
+        "x-powered-by": "Profit",
+        "etag": "W/\"2c8-5SFwA1qh6PzSoR9vQ1mSHtrqbP8\"",
+        "strict-transport-security": "max-age=31536000; includeSubDomains"
       },
       "status_code": 200,
       "type": "ok"

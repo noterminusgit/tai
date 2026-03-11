@@ -39,7 +39,7 @@ defmodule Tai.VenueAdapters.Binance.Stream.Connection do
     }
 
     name = stream.venue.id |> process_name()
-    {:ok, pid} = WebSockex.start_link(endpoint, __MODULE__, state, name: name)
+    {:ok, pid} = Fresh.start_link(endpoint, __MODULE__, state, name: {:local, name})
 
     snapshot_order_books(stream.markets, snapshot_depth)
     {:ok, pid}

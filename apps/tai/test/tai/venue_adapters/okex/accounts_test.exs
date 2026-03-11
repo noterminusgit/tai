@@ -3,32 +3,51 @@ defmodule Tai.VenueAdapters.OkEx.AccountsTest do
   import Mock
   alias Tai.VenueAdapters.OkEx
 
-  @credentials %{api_key: "api_key", api_secret: "api_secret"}
+  @credentials %{api_key: "api_key", api_secret: "YXBpX3NlY3JldA=="}
 
   test ".accounts hydrates spot, swap & futures accounts" do
     with_mocks [
       {
-        ExOkex.Futures.Private,
-        [],
-        list_accounts: fn _venue_credentials ->
-          accounts = %{"BTC" => %{"equity" => "1.1"}}
-          {:ok, %{"info" => accounts}}
-        end
-      },
-      {
-        ExOkex.Swap.Private,
-        [],
-        list_accounts: fn _venue_credentials ->
-          accounts = [%{"instrument_id" => "BTC-USD-SWAP", "equity" => "1.2"}]
-          {:ok, %{"info" => accounts}}
-        end
-      },
-      {
-        ExOkex.Spot.Private,
-        [],
-        list_accounts: fn _venue_credentials ->
-          accounts = [%{"currency" => "BTC", "balance" => "1.3", "available" => "1.0"}]
-          {:ok, accounts}
+        OkEx.Accounts,
+        [:passthrough],
+        fetch_futures: fn _venue_id, _credential_id, _venue_credentials ->
+          account = %Tai.Venues.Account{
+            venue_id: :venue_a,
+            credential_id: :credential_a,
+            asset: :btc,
+            type: "futures",
+            equity: Decimal.new("1.1"),
+            free: Decimal.new(0),
+            locked: Decimal.new("1.1")
+          }
+
+          {:ok, [account]}
+        end,
+        fetch_swap: fn _venue_id, _credential_id, _venue_credentials ->
+          account = %Tai.Venues.Account{
+            venue_id: :venue_a,
+            credential_id: :credential_a,
+            asset: :btc,
+            type: "swap",
+            equity: Decimal.new("1.2"),
+            free: Decimal.new(0),
+            locked: Decimal.new("1.2")
+          }
+
+          {:ok, [account]}
+        end,
+        fetch_spot: fn _venue_id, _credential_id, _venue_credentials ->
+          account = %Tai.Venues.Account{
+            venue_id: :venue_a,
+            credential_id: :credential_a,
+            asset: :btc,
+            type: "spot",
+            equity: Decimal.new("1.3"),
+            free: Decimal.new("1.0"),
+            locked: Decimal.new("0.3")
+          }
+
+          {:ok, [account]}
         end
       }
     ] do

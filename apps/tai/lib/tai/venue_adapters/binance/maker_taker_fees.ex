@@ -1,21 +1,25 @@
 defmodule Tai.VenueAdapters.Binance.MakerTakerFees do
-  def maker_taker_fees(_venue_id, _credential_id, credentials) do
-    venue_credentials = struct!(ExBinance.Credentials, credentials)
+  alias Tai.VenueAdapters.Binance.Auth
 
-    with {:ok, account} <- ExBinance.Spot.Private.account(venue_credentials) do
+  def maker_taker_fees(_venue_id, _credential_id, credentials) do
+    with {:ok, %Req.Response{status: 200, body: account}} <-
+           Auth.signed_request(:get, "/api/v3/account", credentials) do
       percent_factor = Decimal.new(10_000)
-      maker = account.maker_commission |> Decimal.new() |> Decimal.div(percent_factor)
-      taker = account.taker_commission |> Decimal.new() |> Decimal.div(percent_factor)
+      maker = account["makerCommission"] |> Decimal.new() |> Decimal.div(percent_factor)
+      taker = account["takerCommission"] |> Decimal.new() |> Decimal.div(percent_factor)
       {:ok, {maker, taker}}
     else
-      {:error, :receive_window} = error ->
-        error
+      {:ok, %Req.Response{body: %{"code" => -1021}}} ->
+        {:error, :receive_window}
 
-      {:error, {:binance_error, %{"code" => -2014, "msg" => "API-key format invalid." = reason}}} ->
+      {:ok, %Req.Response{body: %{"code" => -2014, "msg" => "API-key format invalid." = reason}}} ->
         {:error, {:credentials, reason}}
 
-      {:error, {:http_error, %HTTPoison.Error{reason: "timeout"}}} ->
+      {:error, %Req.TransportError{reason: :timeout}} ->
         {:error, :timeout}
+
+      {:error, reason} ->
+        {:error, reason}
     end
   end
 end

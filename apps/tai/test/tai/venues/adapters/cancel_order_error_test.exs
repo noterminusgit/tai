@@ -1,10 +1,10 @@
 defmodule Tai.Venues.Adapters.CancelOrderErrorTest do
   use Tai.TestSupport.DataCase, async: false
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Finch
   import Mock
 
   setup_all do
-    HTTPoison.start()
+    :ok
   end
 
   Tai.TestSupport.Helpers.test_venue_adapters_cancel_order_error_not_found()
@@ -46,11 +46,11 @@ defmodule Tai.Venues.Adapters.CancelOrderErrorTest do
 
           open_order = build_open_order(enqueued_order, order_response)
 
-          with_mock HTTPoison,
-            request: fn _url -> {:error, %HTTPoison.Error{reason: @error_reason}} end,
-            post: fn _url, _body, _headers ->
-              {:error, %HTTPoison.Error{reason: @error_reason}}
-            end do
+          with_mock Req,
+            get: fn _url, _opts -> {:error, %Req.TransportError{reason: @error_reason}} end,
+            post: fn _url, _opts -> {:error, %Req.TransportError{reason: @error_reason}} end,
+            put: fn _url, _opts -> {:error, %Req.TransportError{reason: @error_reason}} end,
+            request: fn _opts -> {:error, %Req.TransportError{reason: @error_reason}} end do
             assert {:error, reason} = Tai.Venues.Client.cancel_order(open_order)
             assert reason == @error_reason
           end

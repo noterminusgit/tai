@@ -1,10 +1,9 @@
 defmodule Tai.Venues.Adapters.AccountsTest do
   use ExUnit.Case, async: false
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Finch
 
   setup_all do
     start_supervised!(Tai.TestSupport.Mocks.Server)
-    HTTPoison.start()
     :ok
   end
 

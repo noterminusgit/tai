@@ -11,7 +11,7 @@ defmodule Tai.VenueAdapters.Stub.Stream.Connection do
         ) :: {:ok, pid}
   def start_link(endpoint: endpoint, stream: stream, credential: credential) do
     {name, state} = build_name_and_state(stream, credential)
-    WebSockex.start_link(endpoint, __MODULE__, state, name: name)
+    Fresh.start_link(endpoint, __MODULE__, state, name: {:local, name})
   end
 
   @impl true

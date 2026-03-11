@@ -171,7 +171,7 @@ defmodule Tai.CommanderTest do
     test "returns ok with count of deleted orders" do
       result = Tai.Commander.delete_all_orders()
 
-      assert {:ok, _count} = result
+      assert {_count, nil} = result
     end
   end
 

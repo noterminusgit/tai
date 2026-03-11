@@ -1,7 +1,15 @@
 defmodule Tai.VenueAdapters.Mock.Stream.Connection do
-  use WebSockex
+  @behaviour Fresh
   alias Tai.Markets.OrderBook
   alias Tai.Orders
+
+  def child_spec(opts) do
+    %{
+      id: __MODULE__,
+      start: {__MODULE__, :start_link, [opts]},
+      restart: :transient
+    }
+  end
 
   defmodule State do
     @type venue_id :: Tai.Venue.id()
@@ -25,7 +33,7 @@ defmodule Tai.VenueAdapters.Mock.Stream.Connection do
   def start_link(endpoint: endpoint, stream: stream, credential: _) do
     state = %State{venue: stream.venue.id}
     name = to_name(stream.venue.id)
-    WebSockex.start_link(endpoint, __MODULE__, state, name: name)
+    Fresh.start_link(endpoint, __MODULE__, state, name: {:local, name})
   end
 
   @spec to_name(venue_id) :: atom
@@ -33,31 +41,47 @@ defmodule Tai.VenueAdapters.Mock.Stream.Connection do
     :"#{__MODULE__}_#{venue}"
   end
 
-  def terminate(close_reason, state) do
+  @impl Fresh
+  def handle_terminate(close_reason, state) do
     TaiEvents.warning(%Tai.Events.StreamTerminate{venue: state.venue, reason: close_reason})
   end
 
-  def handle_connect(_conn, state) do
+  @impl Fresh
+  def handle_connect(_status, _headers, state) do
     TaiEvents.info(%Tai.Events.StreamConnect{venue: state.venue})
     {:ok, state}
   end
 
-  def handle_disconnect(conn_status, state) do
-    TaiEvents.warning(%Tai.Events.StreamDisconnect{venue: state.venue, reason: conn_status.reason})
-    {:ok, state}
+  @impl Fresh
+  def handle_disconnect(_code, reason, state) do
+    TaiEvents.warning(%Tai.Events.StreamDisconnect{venue: state.venue, reason: reason})
+    :reconnect
   end
 
-  def handle_frame({:text, msg}, state) do
+  @impl Fresh
+  def handle_in({:text, msg}, state) do
     received_at = Tai.Time.monotonic_time()
 
-    msg
-    |> Jason.decode!()
-    |> handle_msg(received_at, state)
+    case Jason.decode(msg) do
+      {:ok, decoded} ->
+        handle_msg(decoded, received_at, state)
+        {:ok, state}
 
-    {:ok, state}
+      {:error, _} ->
+        {:ok, state}
+    end
   end
 
-  def handle_frame(_frame, state), do: {:ok, state}
+  def handle_in(_frame, state), do: {:ok, state}
+
+  @impl Fresh
+  def handle_control(_frame, state), do: {:ok, state}
+
+  @impl Fresh
+  def handle_info(_msg, state), do: {:ok, state}
+
+  @impl Fresh
+  def handle_error(_error, _state), do: :reconnect
 
   defp handle_msg(
          %{

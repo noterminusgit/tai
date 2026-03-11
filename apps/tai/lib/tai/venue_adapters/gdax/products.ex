@@ -12,20 +12,33 @@ defmodule Tai.VenueAdapters.Gdax.Products do
 
   @spec products(venue) :: {:ok, [product]} | {:error, error_reason}
   def products(venue_id) do
-    with {:ok, exchange_products} <- ExGdax.list_products() do
+    with {:ok, exchange_products} <- fetch_products() do
       products = Enum.map(exchange_products, &build(&1, venue_id))
       {:ok, products}
-    else
-      {:error, "Invalid Passphrase" = reason, _status} ->
+    end
+  end
+
+  defp fetch_products do
+    case Req.get("https://api.exchange.coinbase.com/products") do
+      {:ok, %Req.Response{status: 200, body: body}} when is_list(body) ->
+        {:ok, body}
+
+      {:ok, %Req.Response{status: 503, body: %{"message" => msg}}} ->
+        {:error, {:service_unavailable, msg}}
+
+      {:ok, %Req.Response{status: 503, body: body}} when is_binary(body) ->
+        {:error, {:service_unavailable, body}}
+
+      {:ok, %Req.Response{body: %{"message" => "Invalid Passphrase" = reason}}} ->
         {:error, {:credentials, reason}}
 
-      {:error, "Invalid API Key" = reason, _status} ->
+      {:ok, %Req.Response{body: %{"message" => "Invalid API Key" = reason}}} ->
         {:error, {:credentials, reason}}
 
-      {:error, reason, 503} ->
-        {:error, {:service_unavailable, reason}}
+      {:error, %Req.TransportError{reason: :timeout}} ->
+        {:error, :timeout}
 
-      {:error, "timeout"} ->
+      {:error, _reason} ->
         {:error, :timeout}
     end
   end

@@ -1,11 +1,11 @@
 defmodule Tai.Venues.Adapters.AmendOrderTest do
   use Tai.TestSupport.DataCase, async: false
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Finch
   import Mock
   alias Tai.Orders.Responses
 
   setup_all do
-    HTTPoison.start()
+    :ok
   end
 
   Tai.TestSupport.Helpers.test_venue_adapters_amend_order_accepted()
@@ -86,8 +86,11 @@ defmodule Tai.Venues.Adapters.AmendOrderTest do
 
           open_order = build_open_order(enqueued_order, amend_response)
 
-          with_mock HTTPoison,
-            request: fn _url -> {:error, %HTTPoison.Error{reason: @error_reason}} end do
+          with_mock Req,
+            get: fn _url, _opts -> {:error, %Req.TransportError{reason: @error_reason}} end,
+            post: fn _url, _opts -> {:error, %Req.TransportError{reason: @error_reason}} end,
+            put: fn _url, _opts -> {:error, %Req.TransportError{reason: @error_reason}} end,
+            request: fn _opts -> {:error, %Req.TransportError{reason: @error_reason}} end do
             assert {:error, reason} = Tai.Venues.Client.amend_order(open_order, attrs)
 
             assert reason == @error_reason

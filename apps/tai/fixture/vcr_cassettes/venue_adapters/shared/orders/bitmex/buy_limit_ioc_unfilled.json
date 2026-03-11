@@ -3,7 +3,7 @@
     "request": {
       "body": "{\"ordType\":\"Limit\",\"orderQty\":\"10\",\"price\":\"4450.5\",\"side\":\"Buy\",\"symbol\":\"XBTH19\",\"timeInForce\":\"ImmediateOrCancel\"}",
       "headers": {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
         "api-nonce": "***",
         "api-key": "***",
         "api-signature": "***"
@@ -17,16 +17,16 @@
       "binary": false,
       "body": "{\"orderID\":\"cc69c612-8d16-b667-1fb7-3df4e1b985b7\",\"clOrdID\":\"\",\"clOrdLinkID\":\"\",\"account\":158677,\"symbol\":\"XBTH19\",\"side\":\"Buy\",\"simpleOrderQty\":null,\"orderQty\":10,\"price\":4450.5,\"displayQty\":null,\"stopPx\":null,\"pegOffsetValue\":null,\"pegPriceType\":\"\",\"currency\":\"USD\",\"settlCurrency\":\"XBt\",\"ordType\":\"Limit\",\"timeInForce\":\"ImmediateOrCancel\",\"execInst\":\"\",\"contingencyType\":\"\",\"exDestination\":\"XBME\",\"ordStatus\":\"Canceled\",\"triggered\":\"\",\"workingIndicator\":false,\"ordRejReason\":\"\",\"simpleLeavesQty\":null,\"leavesQty\":0,\"simpleCumQty\":null,\"cumQty\":0,\"avgPx\":null,\"multiLegReportingType\":\"SingleSecurity\",\"text\":\"Canceled: Order had timeInForce of ImmediateOrCancel\\nSubmitted via API.\",\"transactTime\":\"2018-12-14T03:26:43.335Z\",\"timestamp\":\"2018-12-14T03:26:43.335Z\"}",
       "headers": {
-        "Date": "Fri, 14 Dec 2018 03:26:43 GMT",
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": "766",
-        "Connection": "keep-alive",
-        "X-RateLimit-Limit": "300",
-        "X-RateLimit-Remaining": "298",
-        "X-RateLimit-Reset": "1544758004",
-        "X-Powered-By": "Profit",
-        "ETag": "W/\"2fe-uD0LqB33Q3lmm3v1dI6cDq7KWhs\"",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+        "date": "Fri, 14 Dec 2018 03:26:43 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "766",
+        "connection": "keep-alive",
+        "x-ratelimit-limit": "300",
+        "x-ratelimit-remaining": "298",
+        "x-ratelimit-reset": "1544758004",
+        "x-powered-by": "Profit",
+        "etag": "W/\"2fe-uD0LqB33Q3lmm3v1dI6cDq7KWhs\"",
+        "strict-transport-security": "max-age=31536000; includeSubDomains"
       },
       "status_code": 200,
       "type": "ok"

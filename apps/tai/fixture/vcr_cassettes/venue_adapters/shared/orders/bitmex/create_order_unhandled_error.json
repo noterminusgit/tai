@@ -3,7 +3,7 @@
     "request": {
       "body": "{\"clOrdID\":\"gtc-T/40Gg3bT7Wix1XpJrgKVg==\",\"ordType\":\"Limit\",\"orderQty\":null,\"price\":\"10000.5\",\"side\":\"Buy\",\"symbol\":\"XBTH19\",\"timeInForce\":\"GoodTillCancel\"}",
       "headers": {
-        "Content-Type": "application/json",
+        "content-type": "application/json",
         "api-nonce": "***",
         "api-key": "***",
         "api-signature": "***"
@@ -17,16 +17,16 @@
       "binary": false,
       "body": "{\"error\":{\"message\":\"orderQty is required\",\"name\":\"HTTPError\"}}",
       "headers": {
-        "Date": "Sun, 10 Feb 2019 03:53:01 GMT",
-        "Content-Type": "application/json; charset=utf-8",
-        "Content-Length": "63",
-        "Connection": "keep-alive",
-        "X-RateLimit-Limit": "300",
-        "X-RateLimit-Remaining": "299",
-        "X-RateLimit-Reset": "1549770782",
-        "X-Powered-By": "Profit",
-        "ETag": "W/\"3f-tQnYF5YrV0j1JclDhX50v7XZsvg\"",
-        "Strict-Transport-Security": "max-age=31536000; includeSubDomains"
+        "date": "Sun, 10 Feb 2019 03:53:01 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": "63",
+        "connection": "keep-alive",
+        "x-ratelimit-limit": "300",
+        "x-ratelimit-remaining": "299",
+        "x-ratelimit-reset": "1549770782",
+        "x-powered-by": "Profit",
+        "etag": "W/\"3f-tQnYF5YrV0j1JclDhX50v7XZsvg\"",
+        "strict-transport-security": "max-age=31536000; includeSubDomains"
       },
       "status_code": 400,
       "type": "ok"

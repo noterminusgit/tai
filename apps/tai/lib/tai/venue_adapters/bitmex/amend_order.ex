@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.AmendOrder do
+  alias Tai.VenueAdapters.Bitmex.HTTPClient
   alias Tai.Orders.Responses
 
   @type credentials :: Tai.Venues.Adapter.credentials()
@@ -21,9 +22,9 @@ defmodule Tai.VenueAdapters.Bitmex.AmendOrder do
     |> parse_response()
   end
 
-  defdelegate send_to_venue(credentials, params),
-    to: ExBitmex.Rest.Orders,
-    as: :amend
+  defp send_to_venue(credentials, params) do
+    HTTPClient.put("/api/v1/order", credentials, params)
+  end
 
   defdelegate to_venue_credentials(credentials),
     to: Tai.VenueAdapters.Bitmex.Credentials,
@@ -43,11 +44,11 @@ defmodule Tai.VenueAdapters.Bitmex.AmendOrder do
   end
 
   defp parse_response({:ok, venue_order, _rate_limit}) do
-    {:ok, venue_timestamp, 0} = DateTime.from_iso8601(venue_order.timestamp)
+    {:ok, venue_timestamp, 0} = DateTime.from_iso8601(venue_order["timestamp"])
     received_at = Tai.Time.monotonic_time()
 
     response = %Responses.AmendAccepted{
-      id: venue_order.order_id,
+      id: venue_order["orderID"],
       received_at: received_at,
       venue_timestamp: venue_timestamp
     }

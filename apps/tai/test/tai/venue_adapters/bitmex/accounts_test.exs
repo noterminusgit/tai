@@ -4,13 +4,13 @@ defmodule Tai.VenueAdapters.Bitmex.AccountsTest do
   alias Tai.VenueAdapters.Bitmex
 
   @credentials %{api_key: "api_key", api_secret: "api_secret"}
-  @rate_limit struct(ExBitmex.RateLimit)
+  @rate_limit %{remaining: 100, limit: 300, reset: nil}
 
   test ".accounts normalizes the amount from satoshis to btc" do
-    with_mock ExBitmex.Rest.User.Margin,
-      get: fn _venue_credentials ->
-        wallet = struct(ExBitmex.Margin, currency: "XBt", amount: 133_558_082)
-        {:ok, wallet, @rate_limit}
+    with_mock Bitmex.HTTPClient,
+      get: fn "/api/v1/user/margin", _venue_credentials ->
+        margin = %{"currency" => "XBt", "amount" => 133_558_082}
+        {:ok, margin, @rate_limit}
       end do
       assert {:ok, accounts} = Bitmex.Accounts.accounts(:venue_a, :account_a, @credentials)
 

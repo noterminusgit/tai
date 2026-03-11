@@ -23,8 +23,8 @@ defmodule Tai.VenueAdapters.Bitmex.StreamSupervisor do
   @spec to_name(venue_id) :: atom
   def to_name(venue), do: :"#{__MODULE__}_#{venue}"
 
-  # TODO: Make this configurable. Could this come from opts?
-  @endpoint "wss://#{ExBitmex.Rest.HTTPClient.domain()}/realtime"
+  @default_domain "www.bitmex.com"
+  @endpoint "wss://#{Application.compile_env(:ex_bitmex, :domain, @default_domain)}/realtime"
 
   def init(stream) do
     venue = stream.venue

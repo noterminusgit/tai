@@ -1,10 +1,10 @@
 defmodule Tai.Venues.Adapters.AmendBulkOrderTest do
   use Tai.TestSupport.DataCase, async: false
-  use ExVCR.Mock, adapter: ExVCR.Adapter.Hackney
+  use ExVCR.Mock, adapter: ExVCR.Adapter.Finch
   alias Tai.Orders.Responses
 
   setup_all do
-    HTTPoison.start()
+    :ok
   end
 
   Tai.TestSupport.Helpers.test_venue_adapters_amend_bulk_order_accepted()
