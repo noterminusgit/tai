@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Gdax.Accounts do
+  @spec accounts(atom, atom, map) :: {:ok, list} | {:error, term}
   def accounts(venue_id, credential_id, credentials) do
     with {:ok, venue_accounts} <- fetch_accounts(credentials) do
       accounts =

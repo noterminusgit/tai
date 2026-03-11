@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Deribit.Product do
   @time_unit :millisecond
 
+  @spec build(map, atom) :: Tai.Venues.Product.t()
   def build(instrument, venue_id) do
     instrument_name = instrument["instrument_name"]
     symbol = instrument_name |> to_symbol

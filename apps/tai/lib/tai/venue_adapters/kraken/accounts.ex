@@ -3,6 +3,7 @@ defmodule Tai.VenueAdapters.Kraken.Accounts do
   Fetches account balances from Kraken REST API
   """
 
+  @spec accounts(atom, atom, map) :: {:ok, list} | {:error, term}
   def accounts(venue_id, credential_id, credentials) do
     endpoint = "https://api.kraken.com/0/private/Balance"
 

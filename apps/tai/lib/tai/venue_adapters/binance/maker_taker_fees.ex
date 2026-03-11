@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Binance.MakerTakerFees do
   alias Tai.VenueAdapters.Binance.Auth
 
+  @spec maker_taker_fees(atom, atom, map) :: {:ok, {Decimal.t(), Decimal.t()} | nil} | {:error, term}
   def maker_taker_fees(_venue_id, _credential_id, credentials) do
     with {:ok, %Req.Response{status: 200, body: account}} <-
            Auth.signed_request(:get, "/api/v3/account", credentials) do

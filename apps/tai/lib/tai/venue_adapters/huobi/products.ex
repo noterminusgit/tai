@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Huobi.Products do
+  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     with {:ok, future_instruments} <- fetch_contracts() do
       future_products =

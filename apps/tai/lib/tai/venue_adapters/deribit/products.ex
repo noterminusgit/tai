@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Deribit.Products do
   defp domain, do: Application.get_env(:ex_deribit, :domain, "www.deribit.com")
 
+  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     with {:ok, currencies} <- fetch_currencies(),
          {:ok, instruments} <- fetch_instruments(currencies) do

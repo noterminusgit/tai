@@ -2,6 +2,7 @@ defmodule Tai.VenueAdapters.OkEx.Product do
   @iso_date_format "{ISOdate}"
   @zone "Etc/UTC"
 
+  @spec build(map, atom, atom) :: Tai.Venues.Product.t()
   def build(instrument, :future, venue_id) do
     listing = instrument["listing"] |> Timex.parse!(@iso_date_format) |> DateTime.from_naive!(@zone)
     expiry = instrument["delivery"] |> Timex.parse!(@iso_date_format) |> DateTime.from_naive!(@zone)

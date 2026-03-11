@@ -2,6 +2,7 @@ defmodule Tai.VenueAdapters.Binance.CancelOrder do
   alias Tai.Orders.Responses
   alias Tai.VenueAdapters.Binance.Auth
 
+  @spec cancel_order(Tai.Orders.Order.t(), map) :: {:ok, term} | {:error, term}
   def cancel_order(order, credentials) do
     params = %{
       "symbol" => order.venue_product_symbol,

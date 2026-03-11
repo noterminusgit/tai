@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.OkEx.Products do
   @base_url "https://www.okex.com"
 
+  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     with {:ok, future_instruments} <- fetch_instruments("/api/futures/v3/instruments"),
          {:ok, swap_instruments} <- fetch_instruments("/api/swap/v3/instruments"),

@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Bybit.Products do
   alias Tai.VenueAdapters.Bybit.Product
 
+  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     with {:ok, derivative_symbols} <- fetch_symbols() do
       products = derivative_symbols |> Enum.map(&Product.build(&1, venue_id))

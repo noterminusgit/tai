@@ -4,6 +4,7 @@ defmodule Tai.VenueAdapters.Kraken.CreateOrder do
   """
   alias Tai.Orders.Responses
 
+  @spec create_order(Tai.Orders.Order.t(), map) :: {:ok, term} | {:error, term}
   def create_order(order, credentials) do
     endpoint = "https://api.kraken.com/0/private/AddOrder"
 
