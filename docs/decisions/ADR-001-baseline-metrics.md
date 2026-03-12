@@ -42,15 +42,17 @@ Before making any improvements to documentation, type coverage, and test coverag
 
 ## Progress Updates
 
-### 2026-03-11 - Phase 1-5 Complete
+### 2026-03-12 - Phase 1-5 Complete
 
 | Metric | Before | After | Change |
 |--------|--------|-------|--------|
-| Total tests | 625 | 665 | +40 |
-| Tests passing | 585 | 627 | +42 |
-| Files without @spec/@impl | 109 | 75 | -34 |
+| Total tests | 625 | 675 | +50 |
+| Tests passing | 585 | 637 | +52 |
+| Files without @spec/@impl | 109 | 35 | -74 (68% reduction) |
 | @impl true on venue adapters | 1 (Stub) | 11 (all) | +10 |
 | @spec on transition modules | 0/19 | 19/19 | +19 |
+| @spec on venue adapter impls | 0/~60 | ~39/~60 | +39 |
+| @spec on commander module | 0/24 | 24/24 | +24 |
 | Architecture docs | 0 | 8 | +8 |
 | Guardrails docs | 0 | 5 | +5 |
 | ADRs | 0 | 4 | +4 |
