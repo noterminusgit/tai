@@ -39,6 +39,7 @@ defmodule Tai.Fleets.AdvisorConfig do
   ]a
 
   defimpl Stored.Item do
+    @spec key(Tai.Fleets.AdvisorConfig.t()) :: term
     def key(a), do: {a.advisor_id, a.fleet_id}
   end
 end
