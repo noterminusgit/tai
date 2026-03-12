@@ -175,4 +175,14 @@ defmodule Tai.VenueAdapters.Bitmex.Stream.ProcessOrderBook do
 
     {:noreply, new_state}
   end
+
+  def handle_cast(msg, state) do
+    TaiEvents.warning(%Tai.Events.StreamMessageUnhandled{
+      venue_id: state.venue_id,
+      msg: msg,
+      received_at: System.monotonic_time()
+    })
+
+    {:noreply, state}
+  end
 end

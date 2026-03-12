@@ -61,16 +61,29 @@ defmodule Tai.VenueAdapters.Binance.Stream.ProcessOrderBook do
     {:noreply, state}
   end
 
+  def handle_cast(msg, state) do
+    TaiEvents.warning(%Tai.Events.StreamMessageUnhandled{
+      venue_id: state.venue,
+      msg: msg,
+      received_at: System.monotonic_time()
+    })
+
+    {:noreply, state}
+  end
+
   defp normalize_changes(venue_price_points, side) do
     venue_price_points
-    |> Enum.map(fn [raw_price, raw_size] ->
-      {price, _} = Float.parse(raw_price)
-      {size, _} = Float.parse(raw_size)
-      {price, size}
-    end)
-    |> Enum.map(fn
-      {price, 0.0} -> {:delete, side, price}
-      {price, size} -> {:upsert, side, price, size}
+    |> Enum.flat_map(fn [raw_price, raw_size] ->
+      with {price, _} <- Decimal.parse(raw_price),
+           {size, _} <- Decimal.parse(raw_size) do
+        if Decimal.equal?(size, 0) do
+          [{:delete, side, price}]
+        else
+          [{:upsert, side, price, size}]
+        end
+      else
+        :error -> []
+      end
     end)
   end
 end
