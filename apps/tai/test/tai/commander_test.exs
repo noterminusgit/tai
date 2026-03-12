@@ -175,6 +175,91 @@ defmodule Tai.CommanderTest do
     end
   end
 
+  describe ".get_order_by_client_id/2" do
+    test "returns nil when the order does not exist" do
+      result = Tai.Commander.get_order_by_client_id(Ecto.UUID.generate())
+
+      assert result == nil
+    end
+
+    test "returns the order when it exists" do
+      {:ok, order} = create_order(%{status: :enqueued})
+
+      result = Tai.Commander.get_order_by_client_id(order.client_id)
+
+      assert result.client_id == order.client_id
+    end
+  end
+
+  describe ".get_orders_by_client_ids/2" do
+    test "returns matching orders" do
+      {:ok, order} = create_order(%{status: :enqueued})
+
+      result = Tai.Commander.get_orders_by_client_ids([order.client_id])
+
+      assert length(result) == 1
+      assert hd(result).client_id == order.client_id
+    end
+
+    test "returns empty list for non-existent ids" do
+      result = Tai.Commander.get_orders_by_client_ids([Ecto.UUID.generate()])
+
+      assert result == []
+    end
+  end
+
+  describe ".order_transitions/3" do
+    test "returns empty list when no transitions exist" do
+      {:ok, order} = create_order(%{status: :enqueued})
+
+      transitions = Tai.Commander.order_transitions(order.client_id)
+
+      assert transitions == []
+    end
+  end
+
+  describe ".order_transitions_count/3" do
+    test "returns zero when no transitions exist" do
+      {:ok, order} = create_order(%{status: :enqueued})
+
+      count = Tai.Commander.order_transitions_count(order.client_id)
+
+      assert count == 0
+    end
+  end
+
+  describe ".failed_order_transitions/3" do
+    test "returns empty list when no failed transitions exist" do
+      {:ok, order} = create_order(%{status: :enqueued})
+
+      result = Tai.Commander.failed_order_transitions(order.client_id)
+
+      assert result == []
+    end
+  end
+
+  describe ".failed_order_transitions_count/3" do
+    test "returns zero when no failed transitions exist" do
+      {:ok, order} = create_order(%{status: :enqueued})
+
+      count = Tai.Commander.failed_order_transitions_count(order.client_id)
+
+      assert count == 0
+    end
+  end
+
+  describe ".start_venue/2" do
+    test "returns error when venue does not exist" do
+      assert {:error, :not_found} = Tai.Commander.start_venue(:nonexistent_venue)
+    end
+  end
+
+  describe ".stop_venue/2" do
+    test "returns error when venue does not exist" do
+      assert {:error, :not_found} = Tai.Commander.stop_venue(:nonexistent_venue)
+    end
+  end
+
   describe "to_dest/1 (private)" do
     test "routes to local GenServer by default" do
       settings = Tai.Commander.settings()
