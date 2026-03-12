@@ -18,7 +18,6 @@ defmodule Tai.VenueAdapters.Bitmex.CreateOrder do
           | {:unhandled, term}
 
   @spec create_order(order, credentials) :: {:ok, response} | {:error, reason}
-  @spec create_order(Tai.Orders.Order.t(), map) :: {:ok, term} | {:error, term}
   def create_order(%Tai.Orders.Order{} = order, credentials) do
     params = build_params(order)
 

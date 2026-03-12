@@ -11,7 +11,6 @@ defmodule Tai.VenueAdapters.Gdax.Products do
           | {:service_unavailable, reason :: String.t()}
 
   @spec products(venue) :: {:ok, [product]} | {:error, error_reason}
-  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     with {:ok, exchange_products} <- fetch_products() do
       products = Enum.map(exchange_products, &build(&1, venue_id))

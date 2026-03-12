@@ -3,6 +3,7 @@ defmodule Tai.IEx.Commands.Help do
   Display the available commands and their usage
   """
 
+  @spec help() :: atom()
   def help do
     IO.puts("""
     * accounts

@@ -4,6 +4,7 @@ defmodule Tai.Utils.Math do
 
   https://awochna.com/2017/04/02/elixir-math.html
   """
+  @spec pow(number, pos_integer) :: number
   def pow(base, 1), do: base
   def pow(base, exp), do: base * pow(base, exp - 1)
 end

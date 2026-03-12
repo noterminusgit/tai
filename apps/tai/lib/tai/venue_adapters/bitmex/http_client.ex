@@ -1,27 +1,33 @@
 defmodule Tai.VenueAdapters.Bitmex.HTTPClient do
   @default_domain "www.bitmex.com"
 
+  @spec domain :: String.t()
   def domain, do: Application.get_env(:ex_bitmex, :domain, @default_domain)
 
+  @spec get(String.t(), map, map) :: {:ok, term, map | nil} | {:error, term, map | nil}
   def get(path, credentials, params \\ %{}) do
     request(:get, path, credentials, "", params)
   end
 
+  @spec post(String.t(), map, map) :: {:ok, term, map | nil} | {:error, term, map | nil}
   def post(path, credentials, body_params) do
     body = Jason.encode!(body_params)
     request(:post, path, credentials, body)
   end
 
+  @spec put(String.t(), map, map) :: {:ok, term, map | nil} | {:error, term, map | nil}
   def put(path, credentials, body_params) do
     body = Jason.encode!(body_params)
     request(:put, path, credentials, body)
   end
 
+  @spec delete(String.t(), map, map) :: {:ok, term, map | nil} | {:error, term, map | nil}
   def delete(path, credentials, body_params) do
     body = Jason.encode!(body_params)
     request(:delete, path, credentials, body)
   end
 
+  @spec get_unauthenticated(String.t(), map) :: {:ok, term} | {:error, term}
   def get_unauthenticated(path, params \\ %{}) do
     url = "https://#{domain()}#{path}"
     url = if params == %{}, do: url, else: "#{url}?#{URI.encode_query(params)}"

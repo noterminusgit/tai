@@ -57,6 +57,7 @@ defmodule Tai.Orders.Order do
   end
 
   @doc false
+  @spec changeset(t | Ecto.Changeset.t(), map) :: Ecto.Changeset.t()
   def changeset(order, attrs) do
     order
     |> cast(attrs, [

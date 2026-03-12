@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.Stream.ConnectedStats do
+  @spec broadcast(map, atom, integer) :: :ok
   def broadcast(
         %{"bots" => bots, "users" => users},
         venue_id,

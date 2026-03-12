@@ -1,4 +1,5 @@
 defmodule Tai.Products.Queries.ProductSymbolsByVenue do
+  @spec call :: %{atom => [atom]}
   def call do
     Tai.Venues.ProductStore.all()
     |> Enum.reduce(

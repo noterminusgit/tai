@@ -14,7 +14,6 @@ defmodule Tai.VenueAdapters.OkEx.CreateOrder do
   @type reason :: :insufficient_balance | :insufficient_position
 
   @spec create_order(order, credentials) :: {:ok, response} | {:error, reason}
-  @spec create_order(Tai.Orders.Order.t(), map) :: {:ok, term} | {:error, term}
   def create_order(%Tai.Orders.Order{} = order, credentials) do
     {order, credentials}
     |> send_to_venue()
