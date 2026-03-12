@@ -31,6 +31,8 @@ defmodule Tai.Venue do
           opts: map
         }
 
+  @derive {Inspect, except: [:credentials]}
+
   @enforce_keys ~w(
     id
     adapter

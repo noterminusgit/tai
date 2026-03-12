@@ -47,6 +47,16 @@ defmodule Tai.VenueAdapters.Huobi.Stream.ProcessOrderBook do
     {:noreply, state}
   end
 
+  def handle_cast(msg, state) do
+    TaiEvents.warning(%Tai.Events.StreamMessageUnhandled{
+      venue_id: state.venue,
+      msg: msg,
+      received_at: System.monotonic_time()
+    })
+
+    {:noreply, state}
+  end
+
   @timestamp "ts"
   defp build_change_set({data, received_at, state}) do
     {:ok, venue_timestamp} = data |> Map.fetch!(@timestamp) |> DateTime.from_unix(:millisecond)

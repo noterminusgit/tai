@@ -43,6 +43,17 @@ defmodule Tai.VenueAdapters.DeltaExchange.Stream.ProcessOrderBook do
     {:noreply, state}
   end
 
+  @impl true
+  def handle_cast(msg, state) do
+    TaiEvents.warning(%Tai.Events.StreamMessageUnhandled{
+      venue_id: state.venue,
+      msg: msg,
+      received_at: System.monotonic_time()
+    })
+
+    {:noreply, state}
+  end
+
   defp build_change_set({{bids, asks}, received_at, state}) do
     normalized_bids = bids |> normalize_changes(:bid)
     normalized_asks = asks |> normalize_changes(:ask)
@@ -60,10 +71,15 @@ defmodule Tai.VenueAdapters.DeltaExchange.Stream.ProcessOrderBook do
 
   defp normalize_side(data, side) do
     data
-    |> Enum.map(fn
+    |> Enum.flat_map(fn
       %{"limit_price" => raw_price, "size" => size} ->
-        {price, _} = Float.parse(raw_price)
-        {:upsert, side, price, size}
+        case Decimal.parse(raw_price) do
+          {price, _} -> [{:upsert, side, price, Decimal.new(size)}]
+          :error -> []
+        end
+
+      _ ->
+        []
     end)
   end
 end
