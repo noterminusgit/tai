@@ -3,6 +3,8 @@ defmodule Tai.VenueAdapters.Gdax.Stream.ProcessOrderBookTest do
   alias Tai.VenueAdapters.Gdax.Stream.ProcessOrderBook
   alias Tai.Markets.{OrderBook, PricePoint, Quote}
 
+  defp decimal(val), do: Decimal.new(val)
+
   @product struct(Tai.Venues.Product,
              venue_id: :venue_a,
              symbol: :btc_usd,
@@ -31,9 +33,9 @@ defmodule Tai.VenueAdapters.Gdax.Stream.ProcessOrderBookTest do
 
     assert_receive %Quote{} = market_quote
     assert Enum.count(market_quote.bids) == 1
-    assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 5.0}
+    assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100.0"), size: decimal("5.0")}
     assert Enum.count(market_quote.asks) == 1
-    assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 101.0, size: 10.0}
+    assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("101.0"), size: decimal("10.0")}
   end
 
   test "can insert price points into the order book", %{pid: pid} do
@@ -49,9 +51,9 @@ defmodule Tai.VenueAdapters.Gdax.Stream.ProcessOrderBookTest do
 
     assert_receive %Quote{} = market_quote
     assert Enum.count(market_quote.bids) == 1
-    assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 5.0}
+    assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100.0"), size: decimal("5.0")}
     assert Enum.count(market_quote.asks) == 1
-    assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 101.0, size: 10.0}
+    assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("101.0"), size: decimal("10.0")}
   end
 
   test "can update existing price points in the order book", %{pid: pid} do
@@ -60,8 +62,8 @@ defmodule Tai.VenueAdapters.Gdax.Stream.ProcessOrderBookTest do
         venue: @product.venue_id,
         symbol: @product.symbol,
         changes: [
-          {:upsert, :bid, 100.0, 5.0},
-          {:upsert, :ask, 101.0, 10.0}
+          {:upsert, :bid, decimal("100.0"), decimal("5.0")},
+          {:upsert, :ask, decimal("101.0"), decimal("10.0")}
         ]
       )
 
@@ -81,9 +83,9 @@ defmodule Tai.VenueAdapters.Gdax.Stream.ProcessOrderBookTest do
 
     assert_receive %Quote{} = market_quote
     assert Enum.count(market_quote.bids) == 1
-    assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 15.0}
+    assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100.0"), size: decimal("15.0")}
     assert Enum.count(market_quote.asks) == 1
-    assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 101.0, size: 11.0}
+    assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("101.0"), size: decimal("11.0")}
     assert %DateTime{} = market_quote.last_venue_timestamp
     assert market_quote.last_received_at != nil
   end
@@ -94,8 +96,8 @@ defmodule Tai.VenueAdapters.Gdax.Stream.ProcessOrderBookTest do
         venue: @product.venue_id,
         symbol: @product.symbol,
         changes: [
-          {:upsert, :bid, 100.0, 5.0},
-          {:upsert, :ask, 101.0, 10.0}
+          {:upsert, :bid, decimal("100.0"), decimal("5.0")},
+          {:upsert, :ask, decimal("101.0"), decimal("10.0")}
         ]
       )
 
@@ -118,5 +120,27 @@ defmodule Tai.VenueAdapters.Gdax.Stream.ProcessOrderBookTest do
     assert Enum.empty?(market_quote.asks)
     assert %DateTime{} = market_quote.last_venue_timestamp
     assert market_quote.last_received_at != nil
+  end
+
+  test "returns Decimal types in price points", %{pid: pid} do
+    data = %{
+      "bids" => [["100.50", "5.25"]],
+      "asks" => [["101.75", "10.50"]]
+    }
+
+    GenServer.cast(pid, {:snapshot, data, Timex.now()})
+
+    assert_receive %Quote{} = market_quote
+    bid = Enum.at(market_quote.bids, 0)
+    ask = Enum.at(market_quote.asks, 0)
+    assert %Decimal{} = bid.price
+    assert %Decimal{} = bid.size
+    assert %Decimal{} = ask.price
+    assert %Decimal{} = ask.size
+  end
+
+  test "handles unexpected messages without crashing", %{pid: pid} do
+    GenServer.cast(pid, {:unexpected, %{}, System.monotonic_time()})
+    assert Process.alive?(pid)
   end
 end

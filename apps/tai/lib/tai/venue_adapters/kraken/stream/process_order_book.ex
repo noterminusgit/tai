@@ -47,6 +47,16 @@ defmodule Tai.VenueAdapters.Kraken.Stream.ProcessOrderBook do
     {:noreply, state}
   end
 
+  def handle_cast(msg, state) do
+    TaiEvents.warning(%Tai.Events.StreamMessageUnhandled{
+      venue_id: state.venue,
+      msg: msg,
+      received_at: System.monotonic_time()
+    })
+
+    {:noreply, state}
+  end
+
   defp build_change_set({data, received_at, state}) do
     normalized_bids = data |> normalize_changes(:bid)
     normalized_asks = data |> normalize_changes(:ask)

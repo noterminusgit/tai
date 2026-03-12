@@ -10,10 +10,12 @@ defmodule Tai.Markets.PricePoint do
   @enforce_keys ~w(price size)a
   defstruct ~w(price size)a
 
+  @spec fetch(t, atom) :: {:ok, term} | :error
   def fetch(term, :price), do: {:ok, term.price}
   def fetch(term, :size), do: {:ok, term.size}
   def fetch(_, _), do: :error
 
+  @spec get(t, atom, term) :: term
   def get(structure, key, default) do
     case fetch(structure, key) do
       {:ok, value} -> value

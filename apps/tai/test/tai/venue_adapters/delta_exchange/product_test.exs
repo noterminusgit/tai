@@ -49,6 +49,30 @@ defmodule Tai.VenueAdapters.DeltaExchange.ProductTest do
     assert product.type == :move
   end
 
+  test ".build/2 sets status to :trading when operational" do
+    venue_product = build_venue_product(symbol: "BTCUSD", trading_status: "operational")
+    product = VenueAdapters.DeltaExchange.Product.build(venue_product, @venue)
+
+    assert product.status == :trading
+  end
+
+  test ".build/2 sets status to :unknown for other statuses" do
+    venue_product = build_venue_product(symbol: "BTCUSD", trading_status: "halted")
+    product = VenueAdapters.DeltaExchange.Product.build(venue_product, @venue)
+
+    assert product.status == :unknown
+  end
+
+  test ".to_symbol/1 converts to lowercase atom" do
+    assert VenueAdapters.DeltaExchange.Product.to_symbol("BTCUSD") == :btcusd
+    assert VenueAdapters.DeltaExchange.Product.to_symbol("ETH_USDT") == :eth_usdt
+  end
+
+  test ".status/1 maps trading_status" do
+    assert VenueAdapters.DeltaExchange.Product.status(%{"trading_status" => "operational"}) == :trading
+    assert VenueAdapters.DeltaExchange.Product.status(%{"trading_status" => "other"}) == :unknown
+  end
+
   @quoting_asset %{"symbol" => "USDT"}
   @default_attrs %{
     "contract_unit_currency" => "BTC",

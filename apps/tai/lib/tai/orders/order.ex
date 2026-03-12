@@ -57,6 +57,7 @@ defmodule Tai.Orders.Order do
   end
 
   @doc false
+  @spec changeset(t | Ecto.Changeset.t(), map) :: Ecto.Changeset.t()
   def changeset(order, attrs) do
     order
     |> cast(attrs, [
@@ -95,5 +96,9 @@ defmodule Tai.Orders.Order do
       :venue,
       :venue_product_symbol
     ])
+    |> validate_number(:price, greater_than: 0)
+    |> validate_number(:qty, greater_than: 0)
+    |> validate_number(:cumulative_qty, greater_than_or_equal_to: 0)
+    |> validate_number(:leaves_qty, greater_than_or_equal_to: 0)
   end
 end

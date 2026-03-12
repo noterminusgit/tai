@@ -47,6 +47,7 @@ defmodule Tai.Orders.OrderTransition do
   end
 
   @doc false
+  @spec changeset(t | Ecto.Changeset.t(), map) :: Ecto.Changeset.t()
   def changeset(order_transition, attrs) do
     order_transition
     |> cast(attrs, [:order_client_id])

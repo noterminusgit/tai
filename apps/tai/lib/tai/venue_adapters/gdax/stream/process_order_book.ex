@@ -61,27 +61,43 @@ defmodule Tai.VenueAdapters.Gdax.Stream.ProcessOrderBook do
     {:noreply, state}
   end
 
+  def handle_cast(msg, state) do
+    TaiEvents.warning(%Tai.Events.StreamMessageUnhandled{
+      venue_id: state.venue,
+      msg: msg,
+      received_at: System.monotonic_time()
+    })
+
+    {:noreply, state}
+  end
+
   defp normalize_snapshot_changes(data, side) do
     data
-    |> Enum.map(fn [venue_price, venue_size] ->
-      {price, _} = Float.parse(venue_price)
-      {size, _} = Float.parse(venue_size)
-      {:upsert, side, price, size}
+    |> Enum.flat_map(fn [venue_price, venue_size] ->
+      with {price, _} <- Decimal.parse(venue_price),
+           {size, _} <- Decimal.parse(venue_size) do
+        [{:upsert, side, price, size}]
+      else
+        :error -> []
+      end
     end)
   end
 
   defp normalize_update_changes(changes) do
     changes
-    |> Enum.map(fn [side, venue_price, venue_size] ->
-      {price, _} = Float.parse(venue_price)
-      {size, _} = Float.parse(venue_size)
-      {side, price, size}
-    end)
-    |> Enum.map(fn
-      {"buy", price, 0.0} -> {:delete, :bid, price}
-      {"buy", price, size} -> {:upsert, :bid, price, size}
-      {"sell", price, 0.0} -> {:delete, :ask, price}
-      {"sell", price, size} -> {:upsert, :ask, price, size}
+    |> Enum.flat_map(fn [side_str, venue_price, venue_size] ->
+      with {price, _} <- Decimal.parse(venue_price),
+           {size, _} <- Decimal.parse(venue_size) do
+        side = if side_str == "buy", do: :bid, else: :ask
+
+        if Decimal.equal?(size, 0) do
+          [{:delete, side, price}]
+        else
+          [{:upsert, side, price, size}]
+        end
+      else
+        :error -> []
+      end
     end)
   end
 end

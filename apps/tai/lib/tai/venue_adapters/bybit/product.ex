@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bybit.Product do
+  @spec build(map, atom) :: Tai.Venues.Product.t()
   def build(symbol, venue_id) do
     name = symbol["symbol"]
     type = name |> to_type()

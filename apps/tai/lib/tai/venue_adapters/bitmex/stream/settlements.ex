@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.Stream.Settlements do
+  @spec broadcast(map, atom, integer) :: :ok
   def broadcast(
         %{
           "settledPrice" => price,

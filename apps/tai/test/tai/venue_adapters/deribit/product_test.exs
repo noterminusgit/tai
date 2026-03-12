@@ -83,5 +83,34 @@ defmodule Tai.VenuesAdapters.Deribit.ProductTest do
       product = Tai.VenueAdapters.Deribit.Product.build(instrument, :venue_a)
       assert product.strike == Decimal.new("10000")
     end
+
+    test "status is :halt when is_active is false" do
+      instrument = Map.merge(@base_attrs, %{"is_active" => false})
+
+      product = Tai.VenueAdapters.Deribit.Product.build(instrument, :venue_a)
+      assert product.status == :halt
+    end
+
+    test "type is :future for non-perpetual futures" do
+      instrument = @base_attrs
+
+      product = Tai.VenueAdapters.Deribit.Product.build(instrument, :venue_a)
+      assert product.type == :future
+    end
+  end
+
+  describe ".to_symbol/1" do
+    test "converts venue symbol to lowercase atom with underscores" do
+      assert Tai.VenueAdapters.Deribit.Product.to_symbol("BTC-25SEP20") == :btc_25sep20
+      assert Tai.VenueAdapters.Deribit.Product.to_symbol("BTC-PERPETUAL") == :btc_perpetual
+      assert Tai.VenueAdapters.Deribit.Product.to_symbol("ETH-25DEC21-4000-C") == :eth_25dec21_4000_c
+    end
+  end
+
+  describe ".from_symbol/1" do
+    test "converts atom to uppercase string" do
+      assert Tai.VenueAdapters.Deribit.Product.from_symbol(:btc_25sep20) == "BTC_25SEP20"
+      assert Tai.VenueAdapters.Deribit.Product.from_symbol(:btc_perpetual) == "BTC_PERPETUAL"
+    end
   end
 end

@@ -54,7 +54,17 @@ The `Tai.SystemBus` uses specific topic conventions for order book updates, trad
 
 All exchange credentials must be managed through `confex` configuration, using `{:system, "ENV_VAR"}` or `{:system_file, "ENV_VAR"}` syntax. Never commit API keys, secrets, or passphrases to source code or configuration files.
 
-## 10. Never use Logger directly
+## 10. Never expose Erlang distribution ports without network isolation
+
+Tai supports distributed Erlang clustering for multi-node control. In production:
+
+- Never expose EPMD (port 4369) or Erlang distribution ports (9100+) to the public internet without firewall rules
+- Never use a weak or default Erlang cookie — generate a cryptographically random cookie for each environment
+- Never enable remote shell access in production without network isolation (e.g., VPC, private subnet, or SSH tunnel)
+
+Erlang distribution uses cookie-only authentication with no encryption by default. Any host that knows the cookie and can reach the distribution port has full code execution access to the node.
+
+## 11. Never use Logger directly
 
 Use `TaiEvents` for all logging. TaiEvents provides structured, typed event logging that integrates with the system bus and supports downstream processing. Raw `Logger` calls bypass this infrastructure and produce unstructured output that is difficult to filter or analyze.
 

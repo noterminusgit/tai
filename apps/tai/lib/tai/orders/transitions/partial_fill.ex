@@ -21,6 +21,7 @@ defmodule Tai.Orders.Transitions.PartialFill do
     field(:last_venue_timestamp, :utc_datetime_usec)
   end
 
+  @spec changeset(t, map) :: Ecto.Changeset.t()
   def changeset(transition, params) do
     transition
     |> cast(params, [
@@ -33,10 +34,12 @@ defmodule Tai.Orders.Transitions.PartialFill do
     |> validate_required([:leaves_qty, :last_received_at])
   end
 
+  @spec from :: [atom]
   def from do
     ~w[enqueued create_accepted open pending_cancel cancel_accepted pending_amend amend_accepted]a
   end
 
+  @spec attrs(t) :: keyword
   def attrs(transition) do
     qty = Decimal.add(transition.cumulative_qty, transition.leaves_qty)
 
@@ -50,6 +53,7 @@ defmodule Tai.Orders.Transitions.PartialFill do
     ]
   end
 
+  @spec status(atom) :: atom
   def status(:enqueued), do: :open
   def status(:create_accepted), do: :open
   def status(current), do: current

@@ -32,6 +32,7 @@ defmodule Tai.Fleets.FleetConfig do
   ]a
 
   defimpl Stored.Item do
+    @spec key(Tai.Fleets.FleetConfig.t()) :: term
     def key(f), do: f.id
   end
 end

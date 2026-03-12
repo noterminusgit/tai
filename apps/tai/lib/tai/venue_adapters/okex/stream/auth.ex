@@ -2,6 +2,7 @@ defmodule Tai.VenueAdapters.OkEx.Stream.Auth do
   @method "GET"
   @path "/users/self/verify"
 
+  @spec args({atom, map}) :: [term]
   def args({
         _credential_id,
         %{api_key: api_key, api_secret: api_secret, api_passphrase: api_passphrase}
@@ -11,7 +12,7 @@ defmodule Tai.VenueAdapters.OkEx.Stream.Auth do
     decoded_secret =
       case Base.decode64(api_secret) do
         {:ok, secret} -> secret
-        :error -> raise ArgumentError, "invalid base64 in api_secret credential"
+        :error -> raise ArgumentError, "invalid base64 in credential value"
       end
 
     signed = :crypto.mac(:hmac, :sha256, decoded_secret, message) |> Base.encode64()

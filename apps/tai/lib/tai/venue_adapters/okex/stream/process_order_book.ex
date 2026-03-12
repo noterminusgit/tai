@@ -46,6 +46,16 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBook do
     {:noreply, state}
   end
 
+  def handle_cast(msg, state) do
+    TaiEvents.warning(%Tai.Events.StreamMessageUnhandled{
+      venue_id: state.venue,
+      msg: msg,
+      received_at: System.monotonic_time()
+    })
+
+    {:noreply, state}
+  end
+
   @timestamp "timestamp"
   defp build_change_set({data, received_at, state}) do
     {:ok, venue_timestamp, _} = data |> Map.fetch!(@timestamp) |> DateTime.from_iso8601()
@@ -68,20 +78,21 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBook do
 
   defp normalize_side(data, side) do
     data
-    |> Enum.map(fn
-      [raw_price, raw_size, _count] ->
-        {price, ""} = Float.parse(raw_price)
-        {size, ""} = Float.parse(raw_size)
-        {price, size}
+    |> Enum.flat_map(fn
+      [raw_price, raw_size | _rest] ->
+        with {price, _} <- Decimal.parse(raw_price),
+             {size, _} <- Decimal.parse(raw_size) do
+          if Decimal.equal?(size, 0) do
+            [{:delete, side, price}]
+          else
+            [{:upsert, side, price, size}]
+          end
+        else
+          :error -> []
+        end
 
-      [raw_price, raw_size, _forced_liquidations, _count] ->
-        {price, ""} = Float.parse(raw_price)
-        {size, ""} = Float.parse(raw_size)
-        {price, size}
-    end)
-    |> Enum.map(fn
-      {price, 0.0} -> {:delete, side, price}
-      {price, size} -> {:upsert, side, price, size}
+      _ ->
+        []
     end)
   end
 end

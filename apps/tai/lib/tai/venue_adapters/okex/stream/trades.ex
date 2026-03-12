@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.OkEx.Stream.Trades do
   import Tai.VenueAdapters.OkEx.Products, only: [to_symbol: 1]
 
+  @spec broadcast(map, atom, integer) :: :ok
   def broadcast(
         %{
           "instrument_id" => instrument_id,

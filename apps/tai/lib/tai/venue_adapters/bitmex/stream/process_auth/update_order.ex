@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Bitmex.Stream.UpdateOrder do
   alias Tai.VenueAdapters.Bitmex.ClientId
 
+  @spec apply(map, integer, map) :: :ok | term
   def apply(
     %{"clOrdID" => cl_ord_id, "ordStatus" => order_status, "timestamp" => venue_timestamp} = msg,
     received_at,

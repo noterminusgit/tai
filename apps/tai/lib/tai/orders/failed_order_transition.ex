@@ -21,6 +21,7 @@ defmodule Tai.Orders.FailedOrderTransition do
   end
 
   @doc false
+  @spec changeset(t | Ecto.Changeset.t(), map) :: Ecto.Changeset.t()
   def changeset(failed_order_transition, attrs) do
     failed_order_transition
     |> cast(attrs, [:order_client_id, :type, :error])

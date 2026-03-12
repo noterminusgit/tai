@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Binance.Accounts do
   alias Tai.VenueAdapters.Binance.Auth
 
+  @spec accounts(atom, atom, map) :: {:ok, list} | {:error, term}
   def accounts(venue_id, credential_id, credentials) do
     with {:ok, %Req.Response{status: 200, body: venue_account}} <-
            Auth.signed_request(:get, "/api/v3/account", credentials) do

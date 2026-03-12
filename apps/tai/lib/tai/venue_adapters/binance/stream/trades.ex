@@ -12,6 +12,7 @@ defmodule Tai.VenueAdapters.Binance.Stream.Trades do
   #   "m": true,        // Is the buyer the market maker?
   #   "M": true         // Ignore
   # }
+  @spec broadcast(map, atom, integer) :: :ok
   def broadcast(
         %{
           "s" => venue_symbol,

@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.Stream.Liquidations do
+  @spec broadcast(map, String.t(), atom, integer) :: :ok
   def broadcast(
         %{
           "symbol" => venue_symbol,

@@ -3,6 +3,8 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBookTest do
   alias Tai.VenueAdapters.OkEx.Stream.ProcessOrderBook
   alias Tai.Markets.{OrderBook, PricePoint, Quote}
 
+  defp decimal(val), do: Decimal.new(val)
+
   @product struct(Tai.Venues.Product,
              venue_id: :venue_a,
              symbol: :xbtusd,
@@ -32,9 +34,9 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBookTest do
 
       assert_receive %Quote{} = market_quote
       assert Enum.count(market_quote.bids) == 1
-      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 10.0}
+      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100"), size: decimal("10")}
       assert Enum.count(market_quote.asks) == 1
-      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 101.0, size: 5.0}
+      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("101"), size: decimal("5")}
     end
 
     test "can snapshot the order book with liquidations", %{pid: pid} do
@@ -48,9 +50,9 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBookTest do
 
       assert_receive %Quote{} = market_quote
       assert Enum.count(market_quote.bids) == 1
-      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 10.0}
+      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100"), size: decimal("10")}
       assert Enum.count(market_quote.asks) == 1
-      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 101.0, size: 5.0}
+      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("101"), size: decimal("5")}
     end
   end
 
@@ -66,9 +68,9 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBookTest do
 
       assert_receive %Quote{} = market_quote
       assert Enum.count(market_quote.bids) == 1
-      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 110.0}
+      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100"), size: decimal("110")}
       assert Enum.count(market_quote.asks) == 1
-      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 111.0, size: 50.0}
+      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("111"), size: decimal("50")}
     end
 
     test "can insert the order book with liquidations", %{pid: pid} do
@@ -82,9 +84,9 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBookTest do
 
       assert_receive %Quote{} = market_quote
       assert Enum.count(market_quote.bids) == 1
-      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 110.0}
+      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100"), size: decimal("110")}
       assert Enum.count(market_quote.asks) == 1
-      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 111.0, size: 50.0}
+      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("111"), size: decimal("50")}
     end
   end
 
@@ -110,9 +112,9 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBookTest do
 
       assert_receive %Quote{} = market_quote
       assert Enum.count(market_quote.bids) == 1
-      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 110.0}
+      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100"), size: decimal("110")}
       assert Enum.count(market_quote.asks) == 1
-      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 101.0, size: 50.0}
+      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("101"), size: decimal("50")}
     end
 
     test "can update the order book with liquidations", %{pid: pid} do
@@ -136,9 +138,9 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBookTest do
 
       assert_receive %Quote{} = market_quote
       assert Enum.count(market_quote.bids) == 1
-      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: 100.0, size: 110.0}
+      assert Enum.at(market_quote.bids, 0) == %PricePoint{price: decimal("100"), size: decimal("110")}
       assert Enum.count(market_quote.asks) == 1
-      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: 101.0, size: 50.0}
+      assert Enum.at(market_quote.asks, 0) == %PricePoint{price: decimal("101"), size: decimal("50")}
     end
   end
 
@@ -190,5 +192,28 @@ defmodule Tai.VenueAdapters.OkEx.Stream.ProcessOrderBookTest do
       assert Enum.empty?(market_quote.bids)
       assert Enum.empty?(market_quote.asks)
     end
+  end
+
+  test "returns Decimal types in price points", %{pid: pid} do
+    data = %{
+      "timestamp" => "2019-01-05T02:03:06.309Z",
+      "bids" => [["100.50", "10.25", "1"]],
+      "asks" => [["101.75", "5.50", "1"]]
+    }
+
+    GenServer.cast(pid, {:snapshot, data, Timex.now()})
+
+    assert_receive %Quote{} = market_quote
+    bid = Enum.at(market_quote.bids, 0)
+    ask = Enum.at(market_quote.asks, 0)
+    assert %Decimal{} = bid.price
+    assert %Decimal{} = bid.size
+    assert %Decimal{} = ask.price
+    assert %Decimal{} = ask.size
+  end
+
+  test "handles unexpected messages without crashing", %{pid: pid} do
+    GenServer.cast(pid, {:unexpected, %{}, System.monotonic_time()})
+    assert Process.alive?(pid)
   end
 end

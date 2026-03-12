@@ -32,5 +32,6 @@ defmodule Tai.Venues.FeeInfo do
     taker_type
   )a
 
+  @spec percent :: :percent
   def percent, do: :percent
 end

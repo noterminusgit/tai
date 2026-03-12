@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Deribit.Positions do
   defp domain, do: Application.get_env(:ex_deribit, :domain, "www.deribit.com")
 
+  @spec positions(atom, atom, map) :: {:ok, list} | {:error, term}
   def positions(venue_id, credential_id, credentials) do
     venue_credentials = to_venue_credentials(credentials)
 

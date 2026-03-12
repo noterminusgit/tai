@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Bitmex.Products do
   alias Tai.VenueAdapters.Bitmex.HTTPClient
 
+  @spec products(atom) :: {:ok, list} | {:error, term}
   def products(venue_id) do
     get_paginated_products([], venue_id, 0)
   end

@@ -4,6 +4,7 @@ defmodule Tai.VenueAdapters.Huobi.Product do
   @settlement_time "16:00"
   @zone "Etc/UTC"
 
+  @spec build(map, atom) :: Tai.Venues.Product.t()
   def build(contract, venue_id) do
     create_date = contract["create_date"]
     delivery_date = contract["delivery_date"]

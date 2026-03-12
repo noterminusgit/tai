@@ -5,6 +5,7 @@ defmodule Tai.VenueAdapters.Binance.Auth do
 
   @base_url "https://api.binance.com"
 
+  @spec signed_request(atom, String.t(), map, map) :: {:ok, term} | {:error, term}
   def signed_request(method, path, credentials, params \\ %{}) do
     url = @base_url <> path
     timestamp = System.system_time(:millisecond)

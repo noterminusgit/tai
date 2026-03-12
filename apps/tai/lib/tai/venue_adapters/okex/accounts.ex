@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.OkEx.Accounts do
   @base_url "https://www.okex.com"
 
+  @spec accounts(atom, atom, map) :: {:ok, list} | {:error, term}
   def accounts(venue_id, credential_id, credentials) do
     with venue_credentials <- credentials |> to_venue_credentials,
          {:ok, futures} <- fetch_futures(venue_id, credential_id, venue_credentials),

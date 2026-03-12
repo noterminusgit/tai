@@ -3,6 +3,7 @@ defmodule Tai.VenueAdapters.Kraken.MakerTakerFees do
   Fetches maker/taker fee information from Kraken REST API
   """
 
+  @spec maker_taker_fees(atom, atom, map) :: {:ok, {Decimal.t(), Decimal.t()} | nil} | {:error, term}
   def maker_taker_fees(_venue_id, _credential_id, credentials) do
     endpoint = "https://api.kraken.com/0/private/TradeVolume"
 

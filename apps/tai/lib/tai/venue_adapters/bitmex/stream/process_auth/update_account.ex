@@ -1,6 +1,7 @@
 defmodule Tai.VenueAdapters.Bitmex.Stream.UpdateAccount do
   alias Tai.VenueAdapters.Bitmex.NormalizeAccount
 
+  @spec apply(map, integer, map) :: :ok | {:error, :not_found} | {:error, :unknown_asset}
   def apply(%{"marginBalance" => margin} = data, _received_at, state) do
     process_with_margin(data, margin, state)
   end
