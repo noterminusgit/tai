@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.Stream.UpdatePosition do
+  @spec apply(map, integer, map) :: :ok
   def apply(%{"symbol" => venue_symbol, "currentQty" => venue_qty}, _received_at, state) do
     with {:ok, key} <- build_key(venue_symbol, state),
          {:ok, position} <- Tai.Trading.PositionStore.find(key) do

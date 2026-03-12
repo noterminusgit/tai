@@ -3,7 +3,6 @@ defmodule Tai.Venues.AccountStore do
 
   @topic_namespace :account_store
 
-  @spec after_put(term) :: :ok
   def after_put(account) do
     msg = {@topic_namespace, :after_put, account}
     :ok = Tai.SystemBus.broadcast(@topic_namespace, msg)

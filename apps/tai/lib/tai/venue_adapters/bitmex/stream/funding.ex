@@ -1,4 +1,5 @@
 defmodule Tai.VenueAdapters.Bitmex.Stream.Funding do
+  @spec broadcast(map, atom, integer) :: :ok
   def broadcast(
         %{
           "fundingInterval" => interval,

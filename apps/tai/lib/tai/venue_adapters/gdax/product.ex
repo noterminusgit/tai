@@ -1,16 +1,19 @@
 defmodule Tai.VenueAdapters.Gdax.Product do
+  @spec to_symbol(String.t()) :: atom
   def to_symbol(product_id) do
     product_id
     |> strip_and_downcase
     |> String.to_atom()
   end
 
+  @spec to_product_id(atom) :: String.t() | nil
   def to_product_id(symbol) do
     symbol
     |> Tai.Symbol.downcase()
     |> to_normalized_product_id
   end
 
+  @spec to_product_ids([atom]) :: [String.t()]
   def to_product_ids(symbols) do
     symbols
     |> Tai.Symbol.downcase_all()

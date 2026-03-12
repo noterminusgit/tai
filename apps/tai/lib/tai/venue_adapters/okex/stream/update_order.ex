@@ -2,6 +2,7 @@ defmodule Tai.VenueAdapters.OkEx.Stream.UpdateOrder do
 
   @date_format "{ISO:Extended:Z}"
 
+  @spec apply(String.t(), map, integer, map) :: term
   def apply(
         client_id,
         %{"state" => order_state, "timestamp" => timestamp} = msg,
