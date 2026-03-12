@@ -28,7 +28,7 @@ tai/                              # Elixir umbrella project root
 │   │   │   ├── settings.ex       # Runtime settings (send_orders flag)
 │   │   │   ├── system_bus.ex     # Registry-based pub/sub
 │   │   │   ├── trading/          # Position management
-│   │   │   ├── venue_adapters/   # 11 exchange adapters
+│   │   │   ├── venue_adapters/   # 9 exchange adapters (+mock, stub)
 │   │   │   └── venues/           # Venue management, Client, Adapter behavior
 │   │   └── test/                 # Tests mirror lib/ structure
 │   └── examples/                 # Example trading advisors
@@ -85,8 +85,8 @@ See `docs/guardrails/` for complete rules. Critical patterns:
 
 ## Known Issues
 
-1. **Dialyzer warnings**: 10 active warnings (9 `callback_arg_type_mismatch` in Binance/Kraken/Gdax adapters, 1 `pattern_match_cov` in BitMEX). 46 suppressed entries in `.dialyzer_ignore.exs`.
-2. **Venue adapter test failures**: 38 tests fail because they make real HTTP calls. These require actual API credentials to pass.
+1. **Dialyzer warnings**: 10 active warnings (9 `callback_arg_type_mismatch` in Binance/Kraken/Gdax adapters, 1 `pattern_match_cov` in BitMEX). 4 suppressed entries in `.dialyzer_ignore.exs` (96% reduction from original 46).
+2. **Venue adapter test failures**: ~21 tests fail because they make real HTTP calls. These require actual API credentials to pass.
 3. **Coverage gaps**: OrderTransitionWorker, OrderCallbackStore, Venues.Client, and some Commander delegates lack direct unit tests.
 
 ## Testing Approach

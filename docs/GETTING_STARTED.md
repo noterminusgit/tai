@@ -34,20 +34,20 @@
 
 ## Install & Configure Tai
 
-* [https://github.com/fremantle-industries/tai#install](https://github.com/fremantle-industries/tai#install)
-* [https://github.com/fremantle-industries/tai/blob/main/docs/CONFIGURATION.md](https://github.com/fremantle-industries/tai/blob/main/docs/CONFIGURATION.md)
+* [Install](../README.md#install)
+* [Configuration](./CONFIGURATION.md)
 
 ## Streaming Order Book & Trade Data to Advisors
 
-* [https://github.com/fremantle-industries/tai/tree/main/apps/examples/lib/examples/log_spread](https://github.com/fremantle-industries/tai/tree/main/apps/examples/lib/examples/log_spread)
+* [Log Spread Example](../apps/examples/lib/examples/log_spread)
 
 ## Creating and Managing Orders with Advisors
 
-* [https://github.com/fremantle-industries/tai/tree/main/apps/examples/lib/examples/ping_pong](https://github.com/fremantle-industries/tai/tree/main/apps/examples/lib/examples/ping_pong)
+* [Ping Pong Example](../apps/examples/lib/examples/ping_pong)
 
 ## Create and Test a New Venue Adapter
 
-* Create or use an existing Elixir client library for the venue. This will help with mocks when testing
+* Venue adapters are implemented directly using [Req](https://hex.pm/packages/req) for HTTP and [Fresh](https://hex.pm/packages/fresh) for WebSocket — no external exchange client libraries are needed
 * Copy the [stub venue adapter](../apps/tai/lib/tai/venue_adapters/stub.ex), [stream supervisor](../apps/tai/lib/tai/venue_adapters/stub/stream_supervisor.ex) and [stream connection](../apps/tai/lib/tai/venue_adapters/stub/stream/connection.ex) for your venue
 * Implement the [products](../apps/tai/lib/tai/venue_adapters/stub.ex#L10) callback to fetch the list available on the venue
 * Implement the [stream connection](../apps/tai/lib/tai/venue_adapters/stub/stream_supervisor.ex) in the [stream supervisor](../apps/tai/lib/tai/venue_adapters/stub/stream_supervisor.ex) to receive real time order book market data

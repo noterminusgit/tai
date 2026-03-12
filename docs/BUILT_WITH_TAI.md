@@ -2,23 +2,23 @@
 
 [Getting Started](./GETTING_STARTED.md) | [Built with Tai](./BUILT_WITH_TAI.md) | [Commands](./COMMANDS.md) | [Architecture](./ARCHITECTURE.md) | [Examples](../apps/examples/README.md) | [Configuration](./CONFIGURATION.md) | [Observability](./OBSERVABILITY.md)
 
-## [Prop](https://github.com/fremantle-industries/prop)
+## [Prop](https://github.com/fremantle-industries/prop) (archived)
 
 An open and opinionated trading platform using productive & familiar open source libraries and tools for strategy research, execution and operation.
 
-[![prop-station](https://github.com/fremantle-industries/prop/blob/main/docs/prop-station.png)](https://github.com/fremantle-industries/prop)
+> **Note**: This project was maintained by the fremantle-industries GitHub organization and may no longer be actively maintained.
 
-## [Workbench](https://github.com/fremantle-industries/workbench)
+## [Workbench](https://github.com/fremantle-industries/workbench) (archived)
 
 Manage & explore your trading operation across a globally distributed cluster.
 
-[![workbench-balances](https://github.com/fremantle-industries/workbench/blob/main/docs/live-balance-snapshots.png)](https://github.com/fremantle-industries/workbench)
+> **Note**: This project was maintained by the fremantle-industries GitHub organization and may no longer be actively maintained.
 
-## [History](https://github.com/fremantle-industries/history)
+## [History](https://github.com/fremantle-industries/history) (archived)
 
 Download and warehouse historical trading data
 
-[![history-jobs](https://github.com/fremantle-industries/history/blob/main/docs/predicted-funding-rate-download.png)](https://github.com/fremantle-industries/history)
+> **Note**: This project was maintained by the fremantle-industries GitHub organization and may no longer be actively maintained.
 
 ## [Oliya](https://github.com/blacksmith-capital/oliya)
 

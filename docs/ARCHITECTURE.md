@@ -4,7 +4,7 @@
 
 ## Overview
 
-Tai is a composable, real-time market data and trade execution toolkit built on Elixir/OTP. It provides a uniform API across 11 cryptocurrency exchanges with careful attention to concurrency, reliability, and operational safety.
+Tai is a composable, real-time market data and trade execution toolkit built on Elixir/OTP. It provides a uniform API across 9 cryptocurrency exchanges with careful attention to concurrency, reliability, and operational safety.
 
 For detailed architecture documentation, see the `docs/architecture/` directory:
 
