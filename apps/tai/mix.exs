@@ -80,7 +80,7 @@ defmodule Tai.Mixfile do
     %{
       licenses: ["MIT"],
       maintainers: ["Alex Kwiatkowski"],
-      links: %{"GitHub" => "https://github.com/fremantle-industries/tai"}
+      links: %{"GitHub" => "https://github.com/noterminusgit/tai"}
     }
   end
 
