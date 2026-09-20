@@ -183,10 +183,10 @@ defmodule Tai.VenueAdapters.OkEx.CreateOrder do
 
     case Req.post("#{@base_url}#{path}", headers: headers, body: json_body) do
       {:ok, %Req.Response{status: 200, body: resp_body}} ->
-        {:ok, resp_body}
+        {:ok, decode(resp_body)}
 
       {:ok, %Req.Response{body: resp_body}} ->
-        {:error, resp_body}
+        {:error, decode(resp_body)}
 
       {:error, %Req.TransportError{reason: :timeout}} ->
         {:error, :timeout}
@@ -198,4 +198,10 @@ defmodule Tai.VenueAdapters.OkEx.CreateOrder do
         {:error, reason}
     end
   end
+
+  # OkEx's swap API returns JSON responses with a "text/plain" Content-Type
+  # header, so Req does not auto-decode the body. Decode it ourselves when
+  # it comes back as a raw string.
+  defp decode(body) when is_binary(body), do: Jason.decode!(body)
+  defp decode(body), do: body
 end

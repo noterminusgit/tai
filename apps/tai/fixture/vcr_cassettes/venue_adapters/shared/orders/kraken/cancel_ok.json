@@ -14,16 +14,51 @@
     },
     "response": {
       "binary": false,
-      "body": "{\"error\":[\"EAPI:Invalid key\"]}",
+      "body": "{\"error\":[],\"result\":{\"descr\":{\"order\":\"buy 0.00010000 XBTUSD @ limit 25000.50000\"},\"txid\":[\"OCNLOK-BW3P3-BUCMWZ\"]}}",
       "headers": {
         "date": "Wed, 11 Mar 2026 18:24:49 GMT",
         "content-type": "application/json",
-        "content-length": "30",
+        "content-length": "116",
         "connection": "keep-alive",
         "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
         "x-trace-id": "0ab2b951019cde24f3a7000097a55d18",
         "cache-control": "no-store",
         "zjpllh3xat-pad": "6FQYgf#bFZS2~EgecqRcZ3Qg+9pn3tF&",
+        "x-proxy": "gateway",
+        "referrer-policy": "strict-origin-when-cross-origin",
+        "cf-cache-status": "DYNAMIC",
+        "x-content-type-options": "nosniff",
+        "server": "cloudflare"
+      },
+      "status_code": 200,
+      "type": "ok"
+    }
+  },
+  {
+    "request": {
+      "body": "nonce=1773253489612&txid=OCNLOK-BW3P3-BUCMWZ",
+      "headers": {
+        "api-key": "***",
+        "api-sign": "***",
+        "content-type": "application/x-www-form-urlencoded"
+      },
+      "method": "post",
+      "options": [],
+      "request_body": "",
+      "url": "https://api.kraken.com/0/private/CancelOrder"
+    },
+    "response": {
+      "binary": false,
+      "body": "{\"error\":[],\"result\":{\"count\":1}}",
+      "headers": {
+        "date": "Wed, 11 Mar 2026 18:24:50 GMT",
+        "content-type": "application/json",
+        "content-length": "33",
+        "connection": "keep-alive",
+        "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
+        "x-trace-id": "0ab2b951019cde24f3a7000097a55d19",
+        "cache-control": "no-store",
+        "zjpllh3xat-pad2": "6FQYgf#bFZS2~EgecqRcZ3Qg+9pn3tF&",
         "x-proxy": "gateway",
         "referrer-policy": "strict-origin-when-cross-origin",
         "cf-cache-status": "DYNAMIC",

@@ -14,11 +14,11 @@
     },
     "response": {
       "binary": false,
-      "body": "{\"error\":[\"EAPI:Invalid key\"]}",
+      "body": "{\"error\":[\"EOrder:Unknown order\"]}",
       "headers": {
         "date": "Wed, 11 Mar 2026 18:24:48 GMT",
         "content-type": "application/json",
-        "content-length": "30",
+        "content-length": "34",
         "connection": "keep-alive",
         "strict-transport-security": "max-age=31536000; includeSubDomains; preload",
         "x-trace-id": "0ab2b8bc019cde24edda0001bd7c3518",
