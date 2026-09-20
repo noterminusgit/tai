@@ -128,7 +128,7 @@ And configure it's log location:
 
 ```elixir
 # config/runtime.exs
-import Mix.Config
+import Config
 
 config :logger, :file_log, path: "./log/#{Mix.env()}.log"
 config :logger, backends: [{LoggerFileBackend, :file_log}]
@@ -144,7 +144,7 @@ defp deps do
 end
 
 # config/runtime.exs
-import Mix.Config
+import Config
 
 config :logger_json, :backend, metadata: :all
 config :logger, backends: [LoggerJSON]

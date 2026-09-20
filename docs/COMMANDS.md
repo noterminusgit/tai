@@ -133,6 +133,7 @@ iex(7)> venues
 | binance |           - | running |        - |           1 |   10000 |          true |
 |  bitmex |           - | running |        - |           3 |   10000 |          true |
 |    gdax |           - | running |        - |           1 |   10000 |          true |
+|  kraken |           - | running |        - |           1 |   10000 |          true |
 +---------+-------------+---------+----------+-------------+---------+---------------+
 ```
 
