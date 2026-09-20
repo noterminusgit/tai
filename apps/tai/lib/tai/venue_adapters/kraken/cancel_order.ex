@@ -29,10 +29,10 @@ defmodule Tai.VenueAdapters.Kraken.CancelOrder do
 
     cond do
       String.contains?(error_msg, "Unknown order") || String.contains?(error_msg, "Invalid order") ->
-        {:error, {:not_found, error_msg}}
+        {:error, :not_found}
 
       true ->
-        {:error, {:kraken_error, error_msg}}
+        {:error, {:unhandled, error_msg}}
     end
   end
 
