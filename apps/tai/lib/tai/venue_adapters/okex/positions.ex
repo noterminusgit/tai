@@ -5,8 +5,10 @@ defmodule Tai.VenueAdapters.OkEx.Positions do
   def positions(venue_id, credential_id, credentials) do
     venue_credentials = to_venue_credentials(credentials)
 
-    with {:ok, swap_venue_positions} <- authenticated_get("/api/swap/v3/position", venue_credentials),
-         {:ok, futures_venue_positions} <- authenticated_get("/api/futures/v3/position", venue_credentials) do
+    with {:ok, swap_venue_positions} <-
+           authenticated_get("/api/swap/v3/position", venue_credentials),
+         {:ok, futures_venue_positions} <-
+           authenticated_get("/api/futures/v3/position", venue_credentials) do
       swap_positions = swap_venue_positions |> Enum.map(&build_swap(&1, venue_id, credential_id))
 
       futures_positions =
@@ -115,13 +117,19 @@ defmodule Tai.VenueAdapters.OkEx.Positions do
 
     case Req.get("#{@base_url}#{path}", headers: headers) do
       {:ok, %Req.Response{status: 200, body: body}} ->
-        {:ok, body}
+        {:ok, decode(body)}
 
       {:ok, %Req.Response{body: body}} ->
-        {:error, body}
+        {:error, decode(body)}
 
       {:error, reason} ->
         {:error, reason}
     end
   end
+
+  # OkEx's swap API returns JSON responses with a "text/plain" Content-Type
+  # header, so Req does not auto-decode the body. Decode it ourselves when
+  # it comes back as a raw string.
+  defp decode(body) when is_binary(body), do: Jason.decode!(body)
+  defp decode(body), do: body
 end

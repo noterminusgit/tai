@@ -31,13 +31,11 @@ defmodule Tai.VenueAdapters.OkEx.CancelOrder do
   end
 
   defp cancel_endpoint_and_body(%Tai.Orders.Order{product_type: :future}, venue_symbol) do
-    {"/api/futures/v3/cancel_batch_orders/#{venue_symbol}",
-     %{order_ids: []}}
+    {"/api/futures/v3/cancel_batch_orders/#{venue_symbol}", %{order_ids: []}}
   end
 
   defp cancel_endpoint_and_body(%Tai.Orders.Order{product_type: :swap} = order, venue_symbol) do
-    {"/api/swap/v3/cancel_batch_orders/#{venue_symbol}",
-     %{order_ids: [order.venue_order_id]}}
+    {"/api/swap/v3/cancel_batch_orders/#{venue_symbol}", %{order_ids: [order.venue_order_id]}}
   end
 
   defp cancel_endpoint_and_body(%Tai.Orders.Order{product_type: :spot} = order, venue_symbol) do
@@ -114,10 +112,10 @@ defmodule Tai.VenueAdapters.OkEx.CancelOrder do
 
     case Req.post("#{@base_url}#{path}", headers: headers, body: json_body) do
       {:ok, %Req.Response{status: 200, body: resp_body}} ->
-        {:ok, resp_body}
+        {:ok, decode(resp_body)}
 
       {:ok, %Req.Response{body: resp_body}} ->
-        {:error, resp_body}
+        {:error, decode(resp_body)}
 
       {:error, %Req.TransportError{reason: :timeout}} ->
         {:error, :timeout}
@@ -129,4 +127,10 @@ defmodule Tai.VenueAdapters.OkEx.CancelOrder do
         {:error, reason}
     end
   end
+
+  # OkEx's swap API returns JSON responses with a "text/plain" Content-Type
+  # header, so Req does not auto-decode the body. Decode it ourselves when
+  # it comes back as a raw string.
+  defp decode(body) when is_binary(body), do: Jason.decode!(body)
+  defp decode(body), do: body
 end
