@@ -4,15 +4,16 @@ defmodule Tai.VenueAdapters.OkEx.Accounts do
   @spec accounts(atom, atom, map) :: {:ok, list} | {:error, term}
   def accounts(venue_id, credential_id, credentials) do
     with venue_credentials <- credentials |> to_venue_credentials,
-         {:ok, futures} <- fetch_futures(venue_id, credential_id, venue_credentials),
-         {:ok, swap} <- fetch_swap(venue_id, credential_id, venue_credentials),
-         {:ok, spot} <- fetch_spot(venue_id, credential_id, venue_credentials) do
+         {:ok, futures} <- __MODULE__.fetch_futures(venue_id, credential_id, venue_credentials),
+         {:ok, swap} <- __MODULE__.fetch_swap(venue_id, credential_id, venue_credentials),
+         {:ok, spot} <- __MODULE__.fetch_spot(venue_id, credential_id, venue_credentials) do
       {:ok, futures ++ swap ++ spot}
     end
   end
 
   def fetch_futures(venue_id, credential_id, venue_credentials) do
-    with {:ok, %{"info" => info}} <- authenticated_get("/api/futures/v3/accounts", venue_credentials) do
+    with {:ok, %{"info" => info}} <-
+           authenticated_get("/api/futures/v3/accounts", venue_credentials) do
       accounts =
         info
         |> Enum.map(fn {asset, %{"equity" => equity}} ->
@@ -35,7 +36,8 @@ defmodule Tai.VenueAdapters.OkEx.Accounts do
   end
 
   def fetch_swap(venue_id, credential_id, venue_credentials) do
-    with {:ok, %{"info" => swap_accounts}} <- authenticated_get("/api/swap/v3/accounts", venue_credentials) do
+    with {:ok, %{"info" => swap_accounts}} <-
+           authenticated_get("/api/swap/v3/accounts", venue_credentials) do
       accounts =
         swap_accounts
         |> Enum.map(fn %{"instrument_id" => instrument_id, "equity" => equity} ->
