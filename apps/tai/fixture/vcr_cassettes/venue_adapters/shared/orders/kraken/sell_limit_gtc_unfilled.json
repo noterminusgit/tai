@@ -14,11 +14,11 @@
     },
     "response": {
       "binary": false,
-      "body": "{\"error\":[\"EAPI:Invalid key\"]}",
+      "body": "{\"error\":[],\"result\":{\"descr\":{\"order\":\"sell 0.00010000 XBTUSD @ limit 75000.50000\"},\"txid\":[\"OU22CG-KLAF2-FWUDD7\"]}}",
       "headers": {
         "date": "Wed, 11 Mar 2026 18:24:42 GMT",
         "content-type": "application/json",
-        "content-length": "30",
+        "content-length": "117",
         "connection": "keep-alive",
         "x-trace-id": "0ab2b8bc019cde24d5de0001bd576a18",
         "cache-control": "no-store",

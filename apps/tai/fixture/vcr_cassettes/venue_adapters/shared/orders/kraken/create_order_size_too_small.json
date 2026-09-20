@@ -14,11 +14,11 @@
     },
     "response": {
       "binary": false,
-      "body": "{\"error\":[\"EAPI:Invalid key\"]}",
+      "body": "{\"error\":[\"EOrder:Order minimum not met\"]}",
       "headers": {
         "date": "Wed, 11 Mar 2026 18:24:46 GMT",
         "content-type": "application/json",
-        "content-length": "30",
+        "content-length": "42",
         "connection": "keep-alive",
         "x-trace-id": "0ab2b8bf019cde24e6690001eb3a1718",
         "cache-control": "no-store",
