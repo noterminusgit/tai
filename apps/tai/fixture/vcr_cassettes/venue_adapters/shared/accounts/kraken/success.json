@@ -14,11 +14,11 @@
     },
     "response": {
       "binary": false,
-      "body": "{\"error\":[\"EAPI:Invalid key\"]}",
+      "body": "{\"error\":[],\"result\":{\"ZUSD\":\"1000.5000\",\"XXBT\":\"0.5000000000\"}}",
       "headers": {
         "date": "Wed, 11 Mar 2026 18:24:53 GMT",
         "content-type": "application/json",
-        "content-length": "30",
+        "content-length": "64",
         "connection": "keep-alive",
         "x-trace-id": "0ab2b9e7019cde25030100009426b118",
         "cache-control": "no-store",
