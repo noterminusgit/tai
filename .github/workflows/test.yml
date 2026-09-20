@@ -44,13 +44,15 @@ jobs:
       - name: Create CI Secrets
         run: |
           mkdir -p secrets/ci
+          # Some venue adapters (GDAX, OkEx, Kraken) base64-decode api_secret
+          # before signing requests, so dummy values must be valid base64.
           for f in binance_api_key binance_api_secret bitmex_api_key bitmex_api_secret \
             gdax_api_key gdax_api_passphrase gdax_api_secret \
             okex_api_key okex_api_passphrase okex_api_secret \
             deribit_client_id deribit_client_secret \
             delta_exchange_api_key delta_exchange_api_secret \
             kraken_api_key kraken_api_secret; do
-            echo "dummy" > "secrets/ci/$f"
+            printf 'dummy_secret_value' | base64 > "secrets/ci/$f"
           done
 
       - name: Test
