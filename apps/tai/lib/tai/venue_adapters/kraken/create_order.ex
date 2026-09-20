@@ -41,8 +41,13 @@ defmodule Tai.VenueAdapters.Kraken.CreateOrder do
   defp map_order_type(_), do: "limit"
 
   defp add_time_in_force(params, %{time_in_force: :gtc}), do: params
-  defp add_time_in_force(params, %{time_in_force: :ioc}), do: Map.put(params, "timeInForce", "IOC")
-  defp add_time_in_force(params, %{time_in_force: :fok}), do: Map.put(params, "timeInForce", "FOK")
+
+  defp add_time_in_force(params, %{time_in_force: :ioc}),
+    do: Map.put(params, "timeInForce", "IOC")
+
+  defp add_time_in_force(params, %{time_in_force: :fok}),
+    do: Map.put(params, "timeInForce", "FOK")
+
   defp add_time_in_force(params, %{post_only: true}), do: Map.put(params, "oflags", "post")
   defp add_time_in_force(params, _), do: params
 
@@ -66,13 +71,13 @@ defmodule Tai.VenueAdapters.Kraken.CreateOrder do
 
     cond do
       String.contains?(error_msg, "Insufficient funds") ->
-        {:error, {:insufficient_balance, error_msg}}
+        {:error, :insufficient_balance}
 
       String.contains?(error_msg, "Order minimum") ->
-        {:error, {:size_too_small, error_msg}}
+        {:error, :size_too_small}
 
       true ->
-        {:error, {:kraken_error, error_msg}}
+        {:error, {:unhandled, error_msg}}
     end
   end
 
