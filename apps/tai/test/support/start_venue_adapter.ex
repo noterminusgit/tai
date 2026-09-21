@@ -4,6 +4,11 @@ defmodule Support.StartVenueAdapter do
       def stream_supervisor, do: Support.StartStreamSupervisor
 
       def products(_venue_id) do
+        # A tiny delay so venue hydration takes long enough for a
+        # Tai.Venues.Status.status/1 call right after start_supervised!
+        # to reliably observe :starting before it flips to :running -
+        # otherwise this can race depending on scheduler timing.
+        Process.sleep(20)
         {:ok, []}
       end
 
