@@ -8,6 +8,10 @@ defmodule Tai.Venues.Adapters.ProductsTest do
       :ok = Application.stop(:tai)
     end)
 
+    # `:tai` may already be running from a previous test that didn't
+    # stop it explicitly - ensure_all_started/1 is a no-op in that case,
+    # so stop it first to guarantee a clean slate.
+    Application.stop(:tai)
     {:ok, _} = Application.ensure_all_started(:tai)
     start_supervised!(Tai.TestSupport.Mocks.Server)
     :ok
@@ -49,7 +53,7 @@ defmodule Tai.Venues.Adapters.ProductsTest do
           min_size: Decimal.new("0.0001"),
           min_price: Decimal.new("0.01"),
           size_increment: Decimal.new("0.001"),
-          price_increment: Decimal.new("0.01"),
+          price_increment: Decimal.new("0.01")
         },
         %{
           symbol: :ltc_usd,
@@ -58,7 +62,7 @@ defmodule Tai.Venues.Adapters.ProductsTest do
           min_size: Decimal.new("0.0001"),
           min_price: Decimal.new("0.01"),
           size_increment: Decimal.new("0.001"),
-          price_increment: Decimal.new("0.01"),
+          price_increment: Decimal.new("0.01")
         }
       ]
     )

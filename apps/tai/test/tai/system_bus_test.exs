@@ -10,19 +10,21 @@ defmodule Tai.SystemBusTest do
     end
 
     def init(state) do
-      :ok = Tai.SystemBus.subscribe([
-        :my_topic_a,
-        :my_topic_b
-      ])
+      :ok =
+        Tai.SystemBus.subscribe([
+          :my_topic_a,
+          :my_topic_b
+        ])
 
       {:ok, state}
     end
 
     def handle_call(:unsubscribe, _from, state) do
-      :ok = Tai.SystemBus.unsubscribe([
-        :my_topic_a,
-        :my_topic_b
-      ])
+      :ok =
+        Tai.SystemBus.unsubscribe([
+          :my_topic_a,
+          :my_topic_b
+        ])
 
       {:reply, :ok, state}
     end
@@ -44,6 +46,10 @@ defmodule Tai.SystemBusTest do
       :ok = Application.stop(:tai)
     end)
 
+    # `:tai` may already be running from a previous test that didn't
+    # stop it explicitly - ensure_all_started/1 is a no-op in that case,
+    # so stop it first to guarantee a clean slate.
+    Application.stop(:tai)
     {:ok, _} = Application.ensure_all_started(:tai)
     :ok
   end
