@@ -8,6 +8,14 @@ defmodule Tai.Venues.ProductStoreTest do
       :ok = Application.stop(:tai)
     end)
 
+    # `:tai` may already be running (and its `Tai.Venues.ProductStore` ETS
+    # table may already hold data) if a previous `async: false` test left it
+    # started without explicit cleanup. Unlike `Tai.TestSupport.DataCase`,
+    # which always stops `:tai` before restarting it, this test previously
+    # only relied on `ensure_all_started/1`, which is a no-op when `:tai` is
+    # already running - so a dirty store leaked in here. Stop it first so
+    # every test in this file always starts from a fresh, empty store.
+    Application.stop(:tai)
     {:ok, _} = Application.ensure_all_started(:tai)
 
     product =
