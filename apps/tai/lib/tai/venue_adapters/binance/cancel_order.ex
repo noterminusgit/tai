@@ -28,6 +28,10 @@ defmodule Tai.VenueAdapters.Binance.CancelOrder do
     {:error, :not_found}
   end
 
+  defp parse_response({:ok, %Req.Response{body: body}}) do
+    {:error, {:unhandled, body}}
+  end
+
   defp parse_response({:error, reason}) do
     {:error, {:unhandled, reason}}
   end
