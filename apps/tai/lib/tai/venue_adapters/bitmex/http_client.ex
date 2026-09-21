@@ -98,7 +98,9 @@ defmodule Tai.VenueAdapters.Bitmex.HTTPClient do
     {:error, :overloaded, rate_limit}
   end
 
-  defp parse_result({:ok, %Req.Response{body: %{"error" => %{"message" => msg}}, headers: headers}}) do
+  defp parse_result(
+         {:ok, %Req.Response{body: %{"error" => %{"message" => msg}}, headers: headers}}
+       ) do
     rate_limit = parse_rate_limit(headers)
 
     cond do
@@ -153,13 +155,6 @@ defmodule Tai.VenueAdapters.Bitmex.HTTPClient do
     case Map.get(headers, key) do
       [value | _] -> value
       _ -> nil
-    end
-  end
-
-  defp get_header(headers, key) when is_list(headers) do
-    case List.keyfind(headers, key, 0) do
-      {_, value} -> value
-      nil -> nil
     end
   end
 end
