@@ -31,18 +31,20 @@ defmodule Tai.Orders.CreateTest do
       {:ok, _} = Tai.Orders.create(submission)
 
       assert_receive {
-        :callback_fired,
-        nil,
-        %Orders.Order{status: :enqueued},
-        nil
-      }
+                       :callback_fired,
+                       nil,
+                       %Orders.Order{status: :enqueued},
+                       nil
+                     },
+                     1000
 
       assert_receive {
-        :callback_fired,
-        %Orders.Order{status: :enqueued},
-        %Orders.Order{} = accepted_order,
-        transition
-      }
+                       :callback_fired,
+                       %Orders.Order{status: :enqueued},
+                       %Orders.Order{} = accepted_order,
+                       transition
+                     },
+                     1000
 
       assert %Orders.Transitions.AcceptCreate{} = transition
       assert accepted_order.status == :create_accepted
@@ -60,18 +62,20 @@ defmodule Tai.Orders.CreateTest do
       assert {:ok, %Orders.Order{status: :enqueued}} = Tai.Orders.create(submission)
 
       assert_receive {
-        :callback_fired,
-        nil,
-        %Orders.Order{status: :enqueued},
-        nil
-      }
+                       :callback_fired,
+                       nil,
+                       %Orders.Order{status: :enqueued},
+                       nil
+                     },
+                     1000
 
       assert_receive {
-        :callback_fired,
-        %Orders.Order{status: :enqueued},
-        %Orders.Order{} = updated_order,
-        transition
-      }
+                       :callback_fired,
+                       %Orders.Order{status: :enqueued},
+                       %Orders.Order{} = updated_order,
+                       transition
+                     },
+                     1000
 
       assert %Orders.Transitions.VenueCreateError{} = transition
       assert transition.reason == :mock_not_found
@@ -87,11 +91,12 @@ defmodule Tai.Orders.CreateTest do
       {:ok, _} = Tai.Orders.create(submission)
 
       assert_receive {
-        :callback_fired,
-        nil,
-        %Orders.Order{status: :enqueued},
-        nil
-      }
+                       :callback_fired,
+                       nil,
+                       %Orders.Order{status: :enqueued},
+                       nil
+                     },
+                     1000
 
       refute_receive {
         :callback_fired,
@@ -117,18 +122,20 @@ defmodule Tai.Orders.CreateTest do
       {:ok, _} = Tai.Orders.create(submission)
 
       assert_receive {
-        :callback_fired,
-        nil,
-        %Orders.Order{status: :enqueued},
-        nil
-      }
+                       :callback_fired,
+                       nil,
+                       %Orders.Order{status: :enqueued},
+                       nil
+                     },
+                     1000
 
       assert_receive {
-        :callback_fired,
-        %Orders.Order{status: :enqueued},
-        %Orders.Order{} = updated_order,
-        transition
-      }
+                       :callback_fired,
+                       %Orders.Order{status: :enqueued},
+                       %Orders.Order{} = updated_order,
+                       transition
+                     },
+                     1000
 
       assert %Orders.Transitions.RescueCreateError{} = transition
       assert transition.error == %RuntimeError{message: "Venue Adapter Create Raised Error"}
@@ -155,18 +162,20 @@ defmodule Tai.Orders.CreateTest do
         {:ok, _} = Tai.Orders.create(submission)
 
         assert_receive {
-          :callback_fired,
-          nil,
-          %Orders.Order{status: :enqueued},
-          nil
-        }
+                         :callback_fired,
+                         nil,
+                         %Orders.Order{status: :enqueued},
+                         nil
+                       },
+                       1000
 
         assert_receive {
-          :callback_fired,
-          %Orders.Order{status: :enqueued},
-          %Orders.Order{} = skipped_order,
-          transition
-        }
+                         :callback_fired,
+                         %Orders.Order{status: :enqueued},
+                         %Orders.Order{} = skipped_order,
+                         transition
+                       },
+                       1000
 
         assert %Orders.Transitions.Skip{} = transition
 
