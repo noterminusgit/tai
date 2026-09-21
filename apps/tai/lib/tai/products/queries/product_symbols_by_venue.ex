@@ -9,5 +9,6 @@ defmodule Tai.Products.Queries.ProductSymbolsByVenue do
         Map.put(acc, p.venue_id, [p.symbol | venue_products])
       end
     )
+    |> Map.new(fn {venue_id, symbols} -> {venue_id, Enum.sort(symbols)} end)
   end
 end
