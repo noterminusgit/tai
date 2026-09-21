@@ -170,5 +170,6 @@ defmodule Tai.Boot do
       {_venue_id, {:venue, :start}} -> nil
     end)
     |> Enum.filter(& &1)
+    |> Enum.sort_by(fn {venue_id, _reason} -> venue_id end)
   end
 end

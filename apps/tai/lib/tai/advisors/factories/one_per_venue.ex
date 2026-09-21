@@ -17,6 +17,7 @@ defmodule Tai.Advisors.Factories.OnePerVenue do
 
     market_stream_keys
     |> Enum.group_by(fn {v, _s} -> v end)
+    |> Enum.sort_by(fn {v, _keys} -> v end)
     |> Enum.map(fn {v, market_stream_keys} ->
       %Tai.Fleets.AdvisorConfig{
         advisor_id: v,

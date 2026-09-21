@@ -11,6 +11,7 @@ defmodule Tai.Advisors.Factory do
       defp build_venue_product_keys(market_streams) do
         Tai.Products.product_symbols_by_venue()
         |> Juice.squeeze(market_streams)
+        |> Enum.sort_by(fn {v, _symbols} -> v end)
         |> Enum.flat_map(fn {v, symbols} ->
           symbols
           |> Enum.map(fn s -> {v, s} end)
