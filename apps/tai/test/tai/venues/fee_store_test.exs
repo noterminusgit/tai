@@ -8,6 +8,10 @@ defmodule Tai.Venues.FeeStoreTest do
       :ok = Application.stop(:tai)
     end)
 
+    # `:tai` may already be running from a previous test that didn't
+    # stop it explicitly - ensure_all_started/1 is a no-op in that case,
+    # so stop it first to guarantee a clean slate.
+    Application.stop(:tai)
     {:ok, _} = Application.ensure_all_started(:tai)
     :ok
   end

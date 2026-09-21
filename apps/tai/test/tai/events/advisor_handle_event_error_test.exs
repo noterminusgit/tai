@@ -6,7 +6,7 @@ defmodule Tai.Events.AdvisorHandleEventErrorTest do
       event: {:event, :some_event},
       error: %RuntimeError{message: "!!!This is an ERROR!!!"},
       stacktrace: [
-        {MyAdvisor, :execute_handle_market_quote, 2, [file: 'lib/tai/advisor.ex', line: 226]}
+        {MyAdvisor, :execute_handle_market_quote, 2, [file: ~c"lib/tai/advisor.ex", line: 226]}
       ]
     ]
 
@@ -17,6 +17,6 @@ defmodule Tai.Events.AdvisorHandleEventErrorTest do
     assert json.error == "%RuntimeError{message: \"!!!This is an ERROR!!!\"}"
 
     assert json.stacktrace ==
-             "[{MyAdvisor, :execute_handle_market_quote, 2, [file: 'lib/tai/advisor.ex', line: 226]}]"
+             "[{MyAdvisor, :execute_handle_market_quote, 2, [file: ~c\"lib/tai/advisor.ex\", line: 226]}]"
   end
 end

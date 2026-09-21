@@ -207,8 +207,8 @@ defmodule Tai.VenueAdapters.Mock.Stream.Connection do
   defp normalize_snapshot_changes(venue_price_points, side) do
     venue_price_points
     |> Enum.flat_map(fn {venue_price, venue_size} ->
-      with {price, _} <- Decimal.parse(venue_price),
-           {size, _} <- Decimal.parse(venue_size) do
+      with {:ok, price} <- Decimal.cast(venue_price),
+           {:ok, size} <- Decimal.cast(venue_size) do
         if Decimal.equal?(size, 0) do
           [{:delete, side, price}]
         else

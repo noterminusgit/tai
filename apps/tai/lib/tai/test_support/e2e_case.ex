@@ -113,6 +113,24 @@ defmodule Tai.TestSupport.E2ECase do
         after
           5000 -> flunk("Time out waiting 5000ms for venue to start")
         end
+
+        # VenueStart fires once the stream supervisor is started, but the
+        # market stream connects asynchronously. Wait for it to actually
+        # connect before returning, otherwise push_stream_* helpers send
+        # frames to a connection that isn't open yet and they're dropped.
+        wait_for_stream_connect(venue_id)
+      end
+
+      defp wait_for_stream_connect(venue_id) do
+        receive do
+          {TaiEvents.Event, %Tai.Events.StreamConnect{venue: ^venue_id}, :info} ->
+            nil
+
+          {TaiEvents.Event, _, _} ->
+            wait_for_stream_connect(venue_id)
+        after
+          5000 -> flunk("Time out waiting 5000ms for market stream to connect")
+        end
       end
 
       defp e2e_app, do: Application.fetch_env!(:tai, :e2e_app)

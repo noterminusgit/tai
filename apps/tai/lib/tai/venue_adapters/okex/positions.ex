@@ -9,10 +9,16 @@ defmodule Tai.VenueAdapters.OkEx.Positions do
            authenticated_get("/api/swap/v3/position", venue_credentials),
          {:ok, futures_venue_positions} <-
            authenticated_get("/api/futures/v3/position", venue_credentials) do
-      swap_positions = swap_venue_positions |> Enum.map(&build_swap(&1, venue_id, credential_id))
+      swap_positions =
+        swap_venue_positions
+        |> Enum.flat_map(&swap_holdings/1)
+        |> Enum.map(&build_swap(&1, venue_id, credential_id))
 
       futures_positions =
-        futures_venue_positions |> Enum.flat_map(&build_futures(&1, venue_id, credential_id))
+        futures_venue_positions
+        |> Map.get("holding", [])
+        |> List.flatten()
+        |> Enum.flat_map(&build_futures(&1, venue_id, credential_id))
 
       positions = swap_positions ++ futures_positions
 
@@ -24,6 +30,16 @@ defmodule Tai.VenueAdapters.OkEx.Positions do
   end
 
   defp to_venue_credentials(credentials), do: Map.new(credentials)
+
+  # OkEx's swap positions response is grouped by margin_mode, with the
+  # actual positions nested under "holding". Flatten each group's holdings
+  # into the top-level list, carrying the group's margin_mode along since
+  # the individual holding entries don't include it.
+  defp swap_holdings(%{"margin_mode" => margin_mode, "holding" => holding}) do
+    holding |> Enum.map(&Map.put(&1, "margin_mode", margin_mode))
+  end
+
+  defp swap_holdings(_), do: []
 
   def build_swap(venue_position, venue_id, credential_id) do
     %Tai.Trading.Position{

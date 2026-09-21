@@ -84,6 +84,7 @@ defmodule Tai.Venues.Config do
         broadcast_change_set: get(params, :broadcast_change_set, config.broadcast_change_set)
       }
     end)
+    |> Enum.sort_by(& &1.id)
   end
 
   defp get(env, key, default), do: Keyword.get(env, key, default)
